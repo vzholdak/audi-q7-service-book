@@ -10,6 +10,12 @@ const ui = {
   dashboard: $("#dashboard"),
   homeView: $("#homeView"),
   historyView: $("#historyView"),
+  serviceView: $("#serviceView"),
+  expensesView: $("#expensesView"),
+  partsView: $("#partsView"),
+  oilsView: $("#oilsView"),
+  remindersView: $("#remindersView"),
+  moreView: $("#moreView"),
   documentsView: $("#documentsView"),
   archiveInput: $("#archiveInput"),
   headerImport: $("#headerImport"),
@@ -18,7 +24,6 @@ const ui = {
   welcomeImport: $("#welcomeImport"),
   createEmpty: $("#createEmpty"),
   homeImport: $("#homeImport"),
-  homeAddRecord: $("#homeAddRecord"),
   recentRecord: $("#recentRecord"),
   recentDate: $("#recentDate"),
   recentWork: $("#recentWork"),
@@ -52,8 +57,29 @@ const ui = {
   vehicleTitle: $("#vehicleTitle"),
   heroSubtitle: $("#heroSubtitle"),
   statRecords: $("#statRecords"),
-  statTotal: $("#statTotal"),
-  statReview: $("#statReview"),
+  serviceGlanceTitle: $("#serviceGlanceTitle"),
+  serviceGlanceMeta: $("#serviceGlanceMeta"),
+  planTitle: $("#planTitle"),
+  planMeta: $("#planMeta"),
+  serviceTaskList: $("#serviceTaskList"),
+  emptyServiceTasks: $("#emptyServiceTasks"),
+  expenseTotal: $("#expenseTotal"),
+  expenseSubtitle: $("#expenseSubtitle"),
+  expenseChart: $("#expenseChart"),
+  expenseList: $("#expenseList"),
+  emptyExpenses: $("#emptyExpenses"),
+  partsSearch: $("#partsSearch"),
+  oilsSearch: $("#oilsSearch"),
+  partsList: $("#partsList"),
+  oilsList: $("#oilsList"),
+  emptyParts: $("#emptyParts"),
+  emptyOils: $("#emptyOils"),
+  remindersList: $("#remindersList"),
+  emptyReminders: $("#emptyReminders"),
+  quickReminderCount: $("#quickReminderCount"),
+  moduleDialog: $("#moduleDialog"),
+  moduleDialogTitle: $("#moduleDialogTitle"),
+  moduleForm: $("#moduleForm"),
   detailDialog: $("#detailDialog"),
   detailDate: $("#detailDate"),
   detailTitle: $("#detailTitle"),
@@ -100,6 +126,8 @@ let editingRecordId = null;
 let selectedRecordId = null;
 let activeFilters = { status: "all", cost: "all", from: "", through: "" };
 let activeView = "home";
+let appData = { serviceTasks: [], reminders: [], parts: [], oils: [] };
+let editingModule = null;
 
 const moneyFormatter = new Intl.NumberFormat("ru-RU", {
   style: "currency", currency: "RUB", maximumFractionDigits: 2,
@@ -161,6 +189,19 @@ function ensureRecordIds(records) {
   });
 }
 
+function normalizeAppData(value) {
+  const source = value && typeof value === "object" ? value : {};
+  const cleanList = (name) => Array.isArray(source[name])
+    ? source[name].filter((item) => item && typeof item === "object").map((item) => ({ ...item, id: String(item.id || makeId()) }))
+    : [];
+  return {
+    serviceTasks: cleanList("serviceTasks"),
+    reminders: cleanList("reminders"),
+    parts: cleanList("parts"),
+    oils: cleanList("oils"),
+  };
+}
+
 function pageNumber(attachment) {
   if (Number.isInteger(attachment?.page)) return attachment.page;
   const match = String(attachment?.url ?? "").match(/#page=(\d+)/);
@@ -215,14 +256,17 @@ async function readSavedDataset() {
     if (result) {
       datasetMeta = result;
       importedRecords = ensureRecordIds(result.records ?? []);
+      appData = normalizeAppData(result.appData);
       renderApp(result.importedAt);
       if (importedRecords.some((record, index) => record._id !== result.records?.[index]?._id)) {
         await persistRecords();
       }
+      return true;
     }
   } catch {
     showToast("Не удалось прочитать данные. Сохраните архив и попробуйте импортировать его ещё раз.", 5000);
   }
+  return false;
 }
 
 function openImportPicker() {
@@ -307,7 +351,8 @@ async function handleArchive(file) {
     if (importCancelled) throw new Error("Импорт отменён.");
 
     const normalizedRecords = ensureRecordIds(backup.records);
-    await commitDataset(db, normalizedRecords, documents.size, file.name, backup.vehicle ?? null);
+    appData = normalizeAppData(backup.appData ?? appData);
+    await commitDataset(db, normalizedRecords, documents.size, file.name, backup.vehicle ?? null, appData);
     importedRecords = normalizedRecords;
     try { await navigator.storage?.persist?.(); } catch { /* optional browser permission */ }
     hideProgress();
@@ -326,7 +371,7 @@ async function handleArchive(file) {
   }
 }
 
-async function commitDataset(db, records, documentCount, archiveName, vehicle) {
+async function commitDataset(db, records, documentCount, archiveName, vehicle, nextAppData = appData) {
   const tx = db.transaction(["meta", "docs", "stage"], "readwrite");
   const metaStore = tx.objectStore("meta");
   const docsStore = tx.objectStore("docs");
@@ -340,6 +385,7 @@ async function commitDataset(db, records, documentCount, archiveName, vehicle) {
     documentCount,
     archiveName,
     vehicle: vehicle ?? null,
+    appData: normalizeAppData(nextAppData),
   });
   const cursorRequest = stageStore.openCursor();
   cursorRequest.onsuccess = () => {
@@ -356,6 +402,7 @@ async function commitDataset(db, records, documentCount, archiveName, vehicle) {
   datasetMeta = {
     key: "current", records, importedAt: new Date().toISOString(),
     documentCount, archiveName, vehicle: vehicle ?? null,
+    appData: normalizeAppData(nextAppData),
   };
 }
 
@@ -475,8 +522,25 @@ async function persistRecords(records = importedRecords) {
   datasetMeta = value;
 }
 
+async function persistAppData() {
+  const db = await openDatabase();
+  const value = {
+    ...(datasetMeta ?? {}), key: "current", records: importedRecords,
+    importedAt: datasetMeta?.importedAt ?? new Date().toISOString(),
+    documentCount: datasetMeta?.documentCount ?? 0,
+    archiveName: datasetMeta?.archiveName ?? null,
+    vehicle: datasetMeta?.vehicle ?? { model: "Audi Q7" },
+    appData: normalizeAppData(appData),
+  };
+  const tx = db.transaction("meta", "readwrite");
+  tx.objectStore("meta").put(value);
+  await transactionDone(tx);
+  datasetMeta = value;
+}
+
 async function createEmptyJournal() {
-  datasetMeta = { key: "current", records: [], importedAt: new Date().toISOString(), documentCount: 0, archiveName: null, vehicle: { model: "Audi Q7" } };
+  appData = normalizeAppData(appData);
+  datasetMeta = { key: "current", records: [], importedAt: new Date().toISOString(), documentCount: 0, archiveName: null, vehicle: { model: "Audi Q7" }, appData };
   importedRecords = [];
   try {
     await persistRecords();
@@ -492,21 +556,24 @@ function renderApp(importedAt) {
   ui.welcomeFooter.hidden = true;
   ui.dashboard.hidden = false;
   ui.headerAdd.hidden = false;
-  ui.headerExport.hidden = importedRecords.length === 0;
+  ui.headerExport.hidden = importedRecords.length === 0 && !Object.values(appData).some((list) => list.length);
   ui.vehicleTitle.textContent = datasetMeta?.vehicle?.model || "Audi Q7";
   ui.heroSubtitle.textContent = datasetMeta?.vehicle?.model_year
-    ? `${datasetMeta.vehicle.model_year} · личная история обслуживания`
-    : "Личная история обслуживания";
+    ? `${datasetMeta.vehicle.model_year} · ваш автомобиль`
+    : "История и обслуживание автомобиля";
   const sorted = [...importedRecords].sort((a, b) => (recordDate(b)?.getTime() ?? 0) - (recordDate(a)?.getTime() ?? 0));
-  const total = importedRecords.reduce((sum, record) => sum + (recordTotal(record) ?? 0), 0);
   ui.statRecords.textContent = importedRecords.length.toLocaleString("ru-RU");
-  ui.statTotal.textContent = money(total);
-  ui.statReview.textContent = importedRecords.filter(needsAttention).length.toLocaleString("ru-RU");
   ui.quickRecordCount.textContent = importedRecords.length.toLocaleString("ru-RU");
   const documentCount = importedRecords.reduce((sum, record) => sum + (record["Вложения"] ?? []).length, 0);
   ui.quickDocumentCount.textContent = documentCount.toLocaleString("ru-RU");
+  ui.quickReminderCount.textContent = appData.reminders.filter((item) => !item.done).length.toLocaleString("ru-RU");
   renderHomeRecent(sorted[0] ?? null);
   renderDocuments();
+  renderService();
+  renderExpenses();
+  renderCollection("parts");
+  renderCollection("oils");
+  renderReminders();
 
   const years = [...new Set(importedRecords.map((record) => String(record["Дата"] ?? "").slice(-4)).filter((year) => /^\d{4}$/.test(year)))].sort((a, b) => Number(b) - Number(a));
   const selected = ui.yearFilter.value;
@@ -519,13 +586,17 @@ function renderApp(importedAt) {
 }
 
 function switchAppView(view) {
-  if (!["home", "history", "documents"].includes(view)) return;
+  const views = {
+    home: ui.homeView, service: ui.serviceView, history: ui.historyView,
+    expenses: ui.expensesView, parts: ui.partsView, oils: ui.oilsView,
+    reminders: ui.remindersView, more: ui.moreView, documents: ui.documentsView,
+  };
+  if (!views[view]) return;
   activeView = view;
-  ui.homeView.hidden = view !== "home";
-  ui.historyView.hidden = view !== "history";
-  ui.documentsView.hidden = view !== "documents";
+  Object.entries(views).forEach(([key, element]) => { element.hidden = key !== view; });
+  const tabView = ["parts", "oils", "reminders", "documents"].includes(view) ? "more" : view;
   document.querySelectorAll(".app-tab").forEach((tab) => {
-    const selected = tab.dataset.view === view;
+    const selected = tab.dataset.view === tabView;
     tab.classList.toggle("is-active", selected);
     if (selected) tab.setAttribute("aria-current", "page");
     else tab.removeAttribute("aria-current");
@@ -544,6 +615,85 @@ function renderHomeRecent(record) {
   ui.recentMeta.textContent = [record["Документ"], mileage === null ? null : `${mileage.toLocaleString("ru-RU")} км`].filter(Boolean).join(" · ") || "Открыть сведения";
   ui.recentCost.textContent = money(recordTotal(record));
   ui.recentRecord.dataset.recordId = recordId(record);
+}
+
+function storedDateLabel(value) {
+  const match = String(value ?? "").match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  return match ? `${match[3]}.${match[2]}.${match[1]}` : "";
+}
+
+function dueLabel(item) {
+  const parts = [];
+  if (item.dueDate) parts.push(`Дата: ${storedDateLabel(item.dueDate) || item.dueDate}`);
+  if (item.dueMileage) parts.push(`Пробег: ${Number(item.dueMileage).toLocaleString("ru-RU")} км`);
+  return parts.join(" · ") || "Срок не указан";
+}
+
+function moduleActions(kind, item) {
+  const doneButton = kind === "serviceTask" || kind === "reminder"
+    ? `<button class="small-icon-button" type="button" data-module-action="toggle" data-module-kind="${kind}" data-module-id="${escapeHTML(item.id)}" aria-label="${item.done ? "Вернуть в активные" : "Отметить выполненным"}">${item.done ? "↶" : "✓"}</button>` : "";
+  return `<div class="module-row-buttons">${doneButton}<button class="small-icon-button" type="button" data-module-action="edit" data-module-kind="${kind}" data-module-id="${escapeHTML(item.id)}" aria-label="Изменить">✎</button><button class="small-icon-button delete" type="button" data-module-action="delete" data-module-kind="${kind}" data-module-id="${escapeHTML(item.id)}" aria-label="Удалить">×</button></div>`;
+}
+
+function renderService() {
+  const tasks = appData.serviceTasks;
+  const next = tasks.filter((item) => !item.done).sort((a, b) => String(a.dueDate || "9999").localeCompare(String(b.dueDate || "9999")))[0];
+  if (next) {
+    ui.serviceGlanceTitle.textContent = next.title || "Обслуживание";
+    ui.serviceGlanceMeta.textContent = dueLabel(next);
+    ui.planTitle.textContent = next.title || "Следующее обслуживание";
+    ui.planMeta.textContent = dueLabel(next);
+  } else {
+    ui.serviceGlanceTitle.textContent = "Пока не запланировано";
+    ui.serviceGlanceMeta.textContent = "Добавьте напоминание о предстоящих работах";
+    ui.planTitle.textContent = "План пока пуст";
+    ui.planMeta.textContent = "Добавьте дату или пробег следующего ТО и список работ.";
+  }
+  ui.serviceTaskList.innerHTML = tasks.map((item) => `<div class="module-row${item.done ? " task-done" : ""}"><span class="feature-icon mint">${item.done ? "✓" : "◷"}</span><span class="module-row-main"><strong>${escapeHTML(item.title || "Работа")}</strong><small>${escapeHTML(dueLabel(item))}${item.note ? ` · ${escapeHTML(item.note)}` : ""}</small></span>${moduleActions("serviceTask", item)}</div>`).join("");
+  ui.emptyServiceTasks.hidden = tasks.length > 0;
+}
+
+function renderExpenses() {
+  const paid = importedRecords.filter((record) => recordTotal(record) !== null);
+  const total = paid.reduce((sum, record) => sum + recordTotal(record), 0);
+  ui.expenseTotal.textContent = money(total);
+  ui.expenseSubtitle.textContent = `${paid.length.toLocaleString("ru-RU")} записей с указанной суммой`;
+  const byYear = new Map();
+  paid.forEach((record) => {
+    const year = String(record["Дата"] ?? "").match(/(\d{4})$/)?.[1] || "Без даты";
+    byYear.set(year, (byYear.get(year) ?? 0) + recordTotal(record));
+  });
+  const years = [...byYear.entries()].sort((a, b) => a[0].localeCompare(b[0])).slice(-6);
+  const maximum = Math.max(1, ...years.map(([, amount]) => amount));
+  ui.expenseChart.innerHTML = years.length ? years.map(([year, amount]) => `<div class="chart-column"><span class="chart-value">${new Intl.NumberFormat("ru-RU", { notation: "compact", maximumFractionDigits: 1 }).format(amount)} ₽</span><div class="chart-track"><div class="chart-bar" style="height:${Math.max(5, Math.round(amount / maximum * 100))}%"></div></div><span class="chart-year">${escapeHTML(year)}</span></div>`).join("") : `<div class="chart-placeholder">После загрузки архива здесь появятся расходы по годам.</div>`;
+  ui.expenseList.innerHTML = [...paid].sort((a, b) => (recordDate(b)?.getTime() ?? 0) - (recordDate(a)?.getTime() ?? 0)).slice(0, 30).map((record) => `<button class="module-row" type="button" data-expense-record="${escapeHTML(recordId(record))}"><span class="feature-icon blue">▥</span><span class="module-row-main"><strong>${escapeHTML(record["Работы / событие"] || record["Документ"] || "Обслуживание")}</strong><small>${escapeHTML(record["Дата"] || "Дата не указана")}${numeric(record["Пробег, км"]) !== null ? ` · ${numeric(record["Пробег, км"]).toLocaleString("ru-RU")} км` : ""}</small></span><span class="module-row-meta"><strong>${escapeHTML(money(recordTotal(record)))}</strong></span></button>`).join("");
+  ui.emptyExpenses.hidden = paid.length > 0;
+  ui.expenseList.hidden = paid.length === 0;
+}
+
+function renderCollection(kind) {
+  const isParts = kind === "parts";
+  const list = isParts ? appData.parts : appData.oils;
+  const input = isParts ? ui.partsSearch : ui.oilsSearch;
+  const target = isParts ? ui.partsList : ui.oilsList;
+  const empty = isParts ? ui.emptyParts : ui.emptyOils;
+  const query = input.value.trim().toLocaleLowerCase("ru-RU");
+  const filtered = list.filter((item) => [item.name, item.article, item.category, item.viscosity, item.spec, item.note].join(" ").toLocaleLowerCase("ru-RU").includes(query));
+  target.innerHTML = filtered.map((item) => {
+    const details = isParts
+      ? [item.category, item.article ? `Артикул: ${item.article}` : "", item.quantity ? `Количество: ${item.quantity}` : "", item.note].filter(Boolean).join(" · ")
+      : [item.viscosity, item.spec ? `Допуск: ${item.spec}` : "", item.note].filter(Boolean).join(" · ");
+    const price = item.price === "" || item.price == null ? "" : money(Number(item.price));
+    return `<div class="module-row"><span class="feature-icon ${isParts ? "amber" : "violet"}">${isParts ? "⚙" : "◉"}</span><span class="module-row-main"><strong>${escapeHTML(item.name || (isParts ? "Запчасть" : "Масло"))}</strong><small>${escapeHTML(details || "Нажмите ✎, чтобы добавить подробности")}</small></span>${price ? `<span class="module-row-meta"><strong>${escapeHTML(price)}</strong></span>` : ""}${moduleActions(isParts ? "part" : "oil", item)}</div>`;
+  }).join("");
+  empty.hidden = filtered.length > 0;
+  target.hidden = filtered.length === 0;
+}
+
+function renderReminders() {
+  const items = [...appData.reminders].sort((a, b) => String(a.dueDate || "9999").localeCompare(String(b.dueDate || "9999")));
+  ui.remindersList.innerHTML = items.map((item) => `<div class="module-row${item.done ? " task-done" : ""}"><span class="feature-icon rose">${item.done ? "✓" : "♧"}</span><span class="module-row-main"><strong>${escapeHTML(item.title || "Напоминание")}</strong><small>${escapeHTML(dueLabel(item))}${item.note ? ` · ${escapeHTML(item.note)}` : ""}</small></span>${moduleActions("reminder", item)}</div>`).join("");
+  ui.emptyReminders.hidden = items.length > 0;
 }
 
 function renderDocuments() {
@@ -906,8 +1056,9 @@ async function buildBackupZip() {
     setProgress("Готовлю резервную копию", `Запись ${recordIndex + 1} из ${importedRecords.length}`, 10 + Math.round((recordIndex / importedRecords.length) * 25));
   }
   const backup = {
-    format: "Audi Q7 history backup", version: 4, exportedAt: new Date().toISOString(),
+    format: "Audi Q7 history backup", version: 5, exportedAt: new Date().toISOString(),
     vehicle: datasetMeta?.vehicle ?? { model: "Audi Q7" }, records: outputRecords,
+    appData: normalizeAppData(appData),
   };
   const encoder = new TextEncoder();
   const files = [{ name: "Audi_Q7_backup.json", blob: new Blob([JSON.stringify(backup, null, 2)], { type: "application/json" }) },
@@ -952,10 +1103,10 @@ async function buildBackupZip() {
 }
 
 async function exportBackup() {
-  if (!importedRecords.length) return;
+  if (!datasetMeta) return showToast("Сначала добавьте запись или напоминание.");
   showProgress();
   ui.cancelImport.hidden = true;
-  setProgress("Создаю копию журнала", "Записи и прикреплённые документы останутся на устройстве.", 4);
+  setProgress("Создаю копию журнала", "Записи, документы и личные списки будут сохранены в ZIP.", 4);
   try {
     const blob = await buildBackupZip();
     hideProgress();
@@ -977,13 +1128,102 @@ async function exportBackup() {
   }
 }
 
+const moduleDefinitions = {
+  serviceTask: {
+    collection: "serviceTasks", title: "Работа по ТО", icon: "◷",
+    fields: (item) => `<label>Что сделать<input name="title" required maxlength="120" value="${escapeHTML(item.title || "")}" placeholder="Например, заменить фильтр"></label><label>Дата<input name="dueDate" type="date" value="${escapeHTML(item.dueDate || "")}"></label><label>Пробег, км<input name="dueMileage" type="number" min="0" step="1" inputmode="numeric" value="${escapeHTML(item.dueMileage || "")}" placeholder="Если известно"></label><label>Заметка<textarea name="note" rows="2" maxlength="500" placeholder="При необходимости">${escapeHTML(item.note || "")}</textarea></label>`,
+  },
+  reminder: {
+    collection: "reminders", title: "Напоминание", icon: "♧",
+    fields: (item) => `<label>О чём напомнить<input name="title" required maxlength="120" value="${escapeHTML(item.title || "")}" placeholder="Например, записаться на ТО"></label><label>Дата<input name="dueDate" type="date" value="${escapeHTML(item.dueDate || "")}"></label><label>Пробег, км<input name="dueMileage" type="number" min="0" step="1" inputmode="numeric" value="${escapeHTML(item.dueMileage || "")}" placeholder="Если известно"></label><label>Заметка<textarea name="note" rows="2" maxlength="500" placeholder="При необходимости">${escapeHTML(item.note || "")}</textarea></label>`,
+  },
+  part: {
+    collection: "parts", title: "Запчасть", icon: "⚙",
+    fields: (item) => `<label>Название<input name="name" required maxlength="120" value="${escapeHTML(item.name || "")}" placeholder="Название детали"></label><label>Артикул<input name="article" maxlength="100" value="${escapeHTML(item.article || "")}" placeholder="Номер детали"></label><label>Категория<input name="category" maxlength="80" value="${escapeHTML(item.category || "")}" placeholder="Фильтр, тормоза…"></label><div class="form-grid"><label>Цена<input name="price" type="number" min="0" step="0.01" inputmode="decimal" value="${escapeHTML(item.price || "")}" placeholder="₽"></label><label>Количество<input name="quantity" type="number" min="0" step="1" value="${escapeHTML(item.quantity || "")}" placeholder="Шт."></label></div><label>Заметка<textarea name="note" rows="2" maxlength="500" placeholder="Магазин, ссылка или совместимость">${escapeHTML(item.note || "")}</textarea></label>`,
+  },
+  oil: {
+    collection: "oils", title: "Масло или жидкость", icon: "◉",
+    fields: (item) => `<label>Название<input name="name" required maxlength="120" value="${escapeHTML(item.name || "")}" placeholder="Марка и модель"></label><label>Вязкость<input name="viscosity" maxlength="40" value="${escapeHTML(item.viscosity || "")}" placeholder="Запишите по документации"></label><label>Допуск<input name="spec" maxlength="100" value="${escapeHTML(item.spec || "")}" placeholder="Точный допуск"></label><label>Цена<input name="price" type="number" min="0" step="0.01" inputmode="decimal" value="${escapeHTML(item.price || "")}" placeholder="₽"></label><label>Заметка<textarea name="note" rows="2" maxlength="500" placeholder="Объём, дата или магазин">${escapeHTML(item.note || "")}</textarea></label>`,
+  },
+};
+
+function openModuleEditor(kind, item = null) {
+  const definition = moduleDefinitions[kind];
+  if (!definition) return;
+  editingModule = { kind, id: item?.id || null };
+  ui.moduleDialogTitle.textContent = `${item ? "Изменить" : "Добавить"}: ${definition.title.toLocaleLowerCase("ru-RU")}`;
+  ui.moduleForm.innerHTML = `<input type="hidden" name="id" value="${escapeHTML(item?.id || "")}"><div class="form-section">${definition.fields(item || {})}</div><div class="form-error" id="moduleFormError" role="alert" hidden></div><div class="form-footer"><button class="secondary-button" type="button" data-close="moduleDialog">Отмена</button><button class="primary-button form-save" type="submit">Сохранить</button></div>`;
+  ui.moduleDialog.showModal();
+}
+
+async function saveModuleItem(event) {
+  event.preventDefault();
+  if (!editingModule) return;
+  const { kind, id } = editingModule;
+  const definition = moduleDefinitions[kind];
+  const values = Object.fromEntries(new FormData(ui.moduleForm).entries());
+  const item = { ...values, id: id || makeId(), done: false };
+  if (["part", "oil"].includes(kind)) item.price = values.price ? Number(values.price) : "";
+  if (kind === "part") item.quantity = values.quantity ? Number(values.quantity) : "";
+  if (["serviceTask", "reminder"].includes(kind) && id) {
+    item.done = Boolean(appData[definition.collection].find((entry) => entry.id === id)?.done);
+  }
+  const list = appData[definition.collection];
+  const index = id ? list.findIndex((entry) => entry.id === id) : -1;
+  if (index >= 0) list[index] = item;
+  else list.push(item);
+  try {
+    await persistAppData();
+    closeDialog("moduleDialog");
+    editingModule = null;
+    renderApp();
+    showToast("Сохранено на этом устройстве.");
+  } catch {
+    const error = ui.moduleForm.querySelector("#moduleFormError");
+    error.textContent = "Не удалось сохранить. Проверьте свободное место на устройстве.";
+    error.hidden = false;
+  }
+}
+
+async function handleModuleAction(event) {
+  const button = event.target.closest("[data-module-action]");
+  if (!button) return;
+  const { moduleKind: kind, moduleId: id, moduleAction: action } = button.dataset;
+  const definition = moduleDefinitions[kind];
+  if (!definition) return;
+  const list = appData[definition.collection];
+  const item = list.find((entry) => entry.id === id);
+  if (!item) return;
+  if (action === "edit") return openModuleEditor(kind, item);
+  if (action === "delete") {
+    if (!window.confirm("Удалить эту запись из личного списка?")) return;
+    appData[definition.collection] = list.filter((entry) => entry.id !== id);
+  } else if (action === "toggle") {
+    item.done = !item.done;
+  }
+  try { await persistAppData(); renderApp(); }
+  catch { showToast("Не удалось сохранить изменения.", 5000); }
+}
+
 function bindEvents() {
   [ui.headerImport, ui.welcomeImport, ui.replaceImport].forEach((button) => button.addEventListener("click", openImportPicker));
   [ui.headerAdd, ui.addRecord, ui.emptyAdd].forEach((button) => button.addEventListener("click", () => openRecordEditor()));
   ui.headerExport.addEventListener("click", exportBackup);
   ui.createEmpty.addEventListener("click", createEmptyJournal);
-  ui.homeAddRecord.addEventListener("click", () => openRecordEditor());
   ui.homeImport.addEventListener("click", openImportPicker);
+  $("#setPlanButton").addEventListener("click", () => openModuleEditor("serviceTask"));
+  $("#addServiceTask").addEventListener("click", () => openModuleEditor("serviceTask"));
+  $("#addPart").addEventListener("click", () => openModuleEditor("part"));
+  $("#addOil").addEventListener("click", () => openModuleEditor("oil"));
+  $("#addReminder").addEventListener("click", () => openModuleEditor("reminder"));
+  $("#expenseAddRecord").addEventListener("click", () => openRecordEditor());
+  $("#moreAddRecord").addEventListener("click", () => openRecordEditor());
+  $("#moreImport").addEventListener("click", openImportPicker);
+  $("#moreExport").addEventListener("click", exportBackup);
+  ui.moduleForm.addEventListener("submit", saveModuleItem);
+  [ui.partsSearch, ui.oilsSearch].forEach((input) => input.addEventListener("input", () => renderCollection(input === ui.partsSearch ? "parts" : "oils")));
+  document.addEventListener("click", handleModuleAction);
+  document.querySelectorAll("[data-open-module]").forEach((button) => button.addEventListener("click", () => openModuleEditor(button.dataset.openModule)));
   ui.recentRecord.addEventListener("click", () => {
     const record = importedRecords.find((item) => recordId(item) === ui.recentRecord.dataset.recordId);
     if (record) showRecord(record);
@@ -1010,6 +1250,12 @@ function bindEvents() {
     const button = event.target.closest("[data-record-id]");
     if (!button) return;
     const record = importedRecords.find((item) => recordId(item) === button.dataset.recordId);
+    if (record) showRecord(record);
+  });
+  ui.expenseList.addEventListener("click", (event) => {
+    const button = event.target.closest("[data-expense-record]");
+    if (!button) return;
+    const record = importedRecords.find((item) => recordId(item) === button.dataset.expenseRecord);
     if (record) showRecord(record);
   });
   ui.documentsList.addEventListener("click", async (event) => {
@@ -1052,6 +1298,13 @@ function bindEvents() {
 async function startApp() {
   bindEvents();
   await readSavedDataset();
+  if (!datasetMeta) {
+    appData = normalizeAppData(appData);
+    datasetMeta = { key: "current", records: [], importedAt: new Date().toISOString(), documentCount: 0, archiveName: null, vehicle: { model: "Audi Q7" }, appData };
+    importedRecords = [];
+    try { await persistRecords(); } catch { /* the app remains usable for this session */ }
+    renderApp(datasetMeta.importedAt);
+  }
   if ("serviceWorker" in navigator && location.protocol !== "file:") {
     navigator.serviceWorker.register("./sw.js", { updateViaCache: "none" })
       .then((registration) => registration.update())

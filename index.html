@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#10283d">
-  <meta name="description" content="Audi Q7 921 — приложение автомобиля: обслуживание, расходы и документы в одном месте.">
+  <meta name="description" content="Audi Q7 921 — личное приложение: обслуживание, журнал, расходы, запчасти, масла и напоминания.">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Audi Q7 921">
@@ -20,7 +20,7 @@
   <main class="shell">
     <header class="topbar">
       <a class="brand" href="./" aria-label="Приложение Audi Q7 — главная">
-        <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 80 36"><circle cx="16" cy="18" r="11"/><circle cx="32" cy="18" r="11"/><circle cx="48" cy="18" r="11"/><circle cx="64" cy="18" r="11"/></svg><b>921</b></span>
+        <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 80 44"><defs><linearGradient id="brandChrome" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#737b82"/><stop offset=".28" stop-color="#fff"/><stop offset=".56" stop-color="#8c959c"/><stop offset=".79" stop-color="#fff"/><stop offset="1" stop-color="#626970"/></linearGradient></defs><g fill="none" stroke="url(#brandChrome)" stroke-width="3"><circle cx="16" cy="15" r="10"/><circle cx="32" cy="15" r="10"/><circle cx="48" cy="15" r="10"/><circle cx="64" cy="15" r="10"/></g><path d="M7 31H73" stroke="#e32936" stroke-width="1.5"/></svg><b>921</b></span>
         <span><strong>Audi Q7</strong><small>личный автомобиль · 921</small></span>
       </a>
       <div class="topbar-actions">
@@ -56,25 +56,38 @@
     <section class="dashboard" id="dashboard" hidden>
       <section class="app-view home-view" id="homeView">
         <section class="hero-card" aria-label="Главный экран автомобиля">
-          <div class="hero-topline"><span class="eyebrow">МОЙ AUDI</span><span class="status-pill"><i></i>Данные на iPhone</span></div>
-          <div class="vehicle-heading"><div><h1 id="vehicleTitle">Audi Q7</h1><p id="heroSubtitle">Личная история автомобиля</p></div><span class="plate-badge"><small>AUDI</small><strong>921</strong></span></div>
-          <div class="stats-grid">
-            <div class="stat"><span>Обслуживаний</span><strong id="statRecords">—</strong></div>
-            <div class="stat"><span>Общие расходы</span><strong id="statTotal">—</strong></div>
-            <div class="stat"><span>Проверить</span><strong id="statReview">—</strong></div>
-          </div>
+          <div class="hero-topline"><span class="eyebrow">МОЙ AUDI</span><span class="status-pill"><i></i>Личный гараж</span></div>
+          <div class="vehicle-heading"><div><h1 id="vehicleTitle">Audi Q7</h1><p id="heroSubtitle">История и обслуживание автомобиля</p></div><span class="plate-badge"><small>AUDI</small><strong>921</strong></span></div>
+          <svg class="hero-car" viewBox="0 0 520 170" role="img" aria-label="Иллюстрация внедорожника Audi Q7"><path class="car-shadow" d="M42 139h438l-24 12H64z"/><path class="car-body" d="M73 113 98 75c8-13 21-20 38-23l60-10 45-28c11-7 22-10 35-10h85c18 0 31 8 42 21l39 49 30 12c13 4 22 14 24 28l3 15H61l2-12c1-11 4-19 10-24z"/><path class="car-window" d="m114 76 31-17c7-4 13-6 23-7l54-8-22 32H114zm122 0 24-39 41-24h57c9 0 16 4 22 11l38 52H236z"/><path class="car-detail" d="M58 111h32m355 0h22M74 94h45m315 0h32M217 83l-11 34m33-35v35m-168-1h404"/><path class="car-grille" d="M435 91h48l14 16h-65z"/><circle class="wheel" cx="151" cy="123" r="30"/><circle class="wheel-inner" cx="151" cy="123" r="14"/><circle class="wheel" cx="405" cy="123" r="30"/><circle class="wheel-inner" cx="405" cy="123" r="14"/><path class="headlight" d="m89 82 35-6-11 17H80z"/></svg>
+          <div class="hero-bottom"><span>Ваша история обслуживания</span><strong><span id="statRecords">0</span> записей</strong></div>
         </section>
 
-        <div class="home-section-heading"><div><span class="eyebrow">БЫСТРЫЙ ДОСТУП</span><h2>Ваш автомобиль</h2></div></div>
-        <div class="quick-actions">
-          <button class="quick-card" type="button" data-view="history"><span class="quick-icon">↻</span><span><strong>История ТО</strong><small><span id="quickRecordCount">0</span> записей · работы и пробег</small></span><b aria-hidden="true">›</b></button>
-          <button class="quick-card" type="button" data-view="documents"><span class="quick-icon document-icon">▤</span><span><strong>Документы</strong><small><span id="quickDocumentCount">0</span> файлов и сканов</small></span><b aria-hidden="true">›</b></button>
-          <button class="quick-card" type="button" id="homeAddRecord"><span class="quick-icon add-icon">＋</span><span><strong>Добавить обслуживание</strong><small>Записать новую работу или расход</small></span><b aria-hidden="true">›</b></button>
+        <section class="service-glance" id="serviceGlance">
+          <div><span class="eyebrow">СЛЕДУЮЩЕЕ ТО</span><strong id="serviceGlanceTitle">Пока не запланировано</strong><small id="serviceGlanceMeta">Добавьте напоминание о предстоящих работах</small></div>
+          <button class="round-arrow" type="button" data-view="service" aria-label="Открыть план обслуживания">→</button>
+        </section>
+
+        <div class="home-section-heading"><div><span class="eyebrow">ВАШ АВТОМОБИЛЬ</span><h2>Разделы</h2></div></div>
+        <div class="feature-grid">
+          <button class="feature-card" type="button" data-view="service"><span class="feature-icon mint">◷</span><strong>Обслуживание</strong><small>План и работы</small></button>
+          <button class="feature-card" type="button" data-view="history"><span class="feature-icon blue">↻</span><strong>История ТО</strong><small><span id="quickRecordCount">0</span> записей</small></button>
+          <button class="feature-card" type="button" data-view="parts"><span class="feature-icon amber">⚙</span><strong>Запчасти</strong><small>Личный каталог</small></button>
+          <button class="feature-card" type="button" data-view="oils"><span class="feature-icon violet">◉</span><strong>Масла</strong><small>Допуски и заметки</small></button>
+          <button class="feature-card" type="button" data-view="reminders"><span class="feature-icon rose">♧</span><strong>Напоминания</strong><small><span id="quickReminderCount">0</span> активных</small></button>
+          <button class="feature-card" type="button" data-view="expenses"><span class="feature-icon blue">▥</span><strong>Расходы</strong><small>По записям ТО</small></button>
         </div>
 
         <div class="home-section-heading recent-heading"><div><span class="eyebrow">ПОСЛЕДНЕЕ ОБСЛУЖИВАНИЕ</span><h2>Недавняя запись</h2></div><button class="text-button" type="button" data-view="history">Вся история →</button></div>
         <button class="recent-card" id="recentRecord" type="button" hidden><span class="recent-date" id="recentDate">—</span><span class="recent-main"><strong id="recentWork">—</strong><small id="recentMeta">—</small></span><span class="recent-cost" id="recentCost">—</span></button>
-        <div class="empty-recent" id="emptyRecent"><strong>История пока пустая</strong><p>Загрузите архив или добавьте первое обслуживание.</p><button class="secondary-button" id="homeImport" type="button">Загрузить архив</button></div>
+        <div class="empty-recent" id="emptyRecent"><strong>История ещё не загружена</strong><p>Импортируйте архив ТО, чтобы увидеть ваши записи и документы.</p><button class="secondary-button" id="homeImport" type="button">Загрузить архив</button></div>
+      </section>
+
+      <section class="app-view service-view" id="serviceView" hidden>
+        <section class="history-title"><span class="eyebrow">AUDI Q7 · 921</span><h1>Обслуживание</h1><p>Планируйте работы и отмечайте выполненные задачи.</p></section>
+        <section class="plan-card"><div class="plan-card-top"><span class="feature-icon mint">◷</span><span class="eyebrow">БЛИЖАЙШЕЕ ОБСЛУЖИВАНИЕ</span></div><h2 id="planTitle">План пока пуст</h2><p id="planMeta">Добавьте дату или пробег следующего ТО и список работ.</p><button class="primary-button compact-button" id="setPlanButton" type="button">Настроить обслуживание <span>→</span></button></section>
+        <div class="section-heading module-heading"><div><span class="eyebrow">ВАШ ПЛАН</span><h2>Работы</h2></div><button class="text-button" id="addServiceTask" type="button">+ Добавить</button></div>
+        <div class="module-list" id="serviceTaskList"></div>
+        <div class="module-empty" id="emptyServiceTasks"><span>✓</span><strong>Здесь появится план работ</strong><p>Создайте задачу и укажите дату или пробег, когда её нужно выполнить.</p><button class="secondary-button" type="button" data-open-module="serviceTask">Добавить работу</button></div>
       </section>
 
       <section class="app-view history-view" id="historyView" hidden>
@@ -106,10 +119,58 @@
         <div class="empty-filter" id="emptyDocuments" hidden><div class="empty-symbol">▤</div><strong>Документы не найдены</strong><p>Импортируйте архив Audi Q7, чтобы открыть приложенные сканы и PDF.</p></div>
       </section>
 
+      <section class="app-view expenses-view" id="expensesView" hidden>
+        <section class="history-title"><span class="eyebrow">AUDI Q7 · 921</span><h1>Расходы</h1><p>Суммы рассчитаны по записям в вашей истории ТО.</p></section>
+        <section class="expense-total-card"><span class="eyebrow">ВСЕГО ПО ИСТОРИИ</span><strong id="expenseTotal">—</strong><small id="expenseSubtitle">Суммы из подтверждённых записей</small></section>
+        <div class="section-heading module-heading"><div><span class="eyebrow">ПО ГОДАМ</span><h2>Расходы на обслуживание</h2></div></div>
+        <div class="expense-chart" id="expenseChart"></div>
+        <div class="section-heading module-heading"><div><span class="eyebrow">ИСТОРИЯ</span><h2>Оплаченные работы</h2></div><button class="text-button" type="button" data-view="history">Вся история →</button></div>
+        <div class="module-list" id="expenseList"></div>
+        <div class="module-empty" id="emptyExpenses"><strong>Пока нет сумм</strong><p>Импортируйте архив или добавьте стоимость при создании записи ТО.</p><button class="secondary-button" type="button" id="expenseAddRecord">Добавить запись</button></div>
+      </section>
+
+      <section class="app-view collection-view" id="partsView" hidden>
+        <section class="history-title"><span class="eyebrow">МОЙ КАТАЛОГ</span><h1>Запчасти</h1><p>Сохраняйте артикулы, цены и заметки для своего автомобиля.</p></section>
+        <label class="search-box collection-search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/></svg><input id="partsSearch" type="search" placeholder="Название или артикул" autocomplete="off"></label>
+        <div class="section-heading module-heading"><div><span class="eyebrow">ВАШИ ЗАПИСИ</span><h2>Каталог</h2></div><button class="text-button" id="addPart" type="button">+ Добавить</button></div>
+        <div class="module-list" id="partsList"></div>
+        <div class="module-empty" id="emptyParts"><span>⚙</span><strong>Каталог пока пуст</strong><p>Добавьте нужную запчасть и сохраните артикул, чтобы быстро найти её позже.</p><button class="secondary-button" type="button" data-open-module="part">Добавить запчасть</button></div>
+      </section>
+
+      <section class="app-view collection-view" id="oilsView" hidden>
+        <section class="history-title"><span class="eyebrow">МОЙ КАТАЛОГ</span><h1>Масла</h1><p>Запишите марку, вязкость и допуск, указанные для вашего автомобиля.</p></section>
+        <label class="search-box collection-search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/></svg><input id="oilsSearch" type="search" placeholder="Марка, вязкость или допуск" autocomplete="off"></label>
+        <div class="section-heading module-heading"><div><span class="eyebrow">ВАШИ ЗАПИСИ</span><h2>Подборка</h2></div><button class="text-button" id="addOil" type="button">+ Добавить</button></div>
+        <div class="module-list" id="oilsList"></div>
+        <div class="module-empty" id="emptyOils"><span>◉</span><strong>Список масел пуст</strong><p>Добавляйте только те характеристики и допуски, которые подтверждены документацией автомобиля.</p><button class="secondary-button" type="button" data-open-module="oil">Добавить масло</button></div>
+      </section>
+
+      <section class="app-view reminders-view" id="remindersView" hidden>
+        <section class="history-title"><span class="eyebrow">ВАШ AUDI Q7</span><h1>Напоминания</h1><p>Запланируйте замену расходников или дату следующего визита.</p></section>
+        <div class="section-heading module-heading"><div><span class="eyebrow">ПЛАНЫ И СРОКИ</span><h2>Напоминания</h2></div><button class="text-button" id="addReminder" type="button">+ Добавить</button></div>
+        <div class="module-list" id="remindersList"></div>
+        <div class="module-empty" id="emptyReminders"><span>♧</span><strong>Напоминаний пока нет</strong><p>Добавьте дату или пробег, к которому нужно вернуться.</p><button class="secondary-button" type="button" data-open-module="reminder">Создать напоминание</button></div>
+      </section>
+
+      <section class="app-view more-view" id="moreView" hidden>
+        <section class="history-title"><span class="eyebrow">МОЙ AUDI</span><h1>Ещё</h1><p>Каталоги, документы и резервная копия вашего журнала.</p></section>
+        <div class="more-list">
+          <button class="more-row" type="button" data-view="parts"><span class="feature-icon amber">⚙</span><span><strong>Каталог запчастей</strong><small>Артикулы, цены и остатки</small></span><b>›</b></button>
+          <button class="more-row" type="button" data-view="oils"><span class="feature-icon violet">◉</span><span><strong>Масла и жидкости</strong><small>Ваши заметки и допуски</small></span><b>›</b></button>
+          <button class="more-row" type="button" data-view="reminders"><span class="feature-icon rose">♧</span><span><strong>Напоминания</strong><small>Предстоящие работы</small></span><b>›</b></button>
+          <button class="more-row" type="button" data-view="documents"><span class="feature-icon blue">▤</span><span><strong>Документы</strong><small><span id="quickDocumentCount">0</span> файлов из архива</small></span><b>›</b></button>
+          <button class="more-row" type="button" id="moreAddRecord"><span class="feature-icon mint">＋</span><span><strong>Добавить запись ТО</strong><small>Работа, дата, стоимость, фото</small></span><b>›</b></button>
+          <button class="more-row" type="button" id="moreImport"><span class="feature-icon blue">⇧</span><span><strong>Загрузить архив</strong><small>Открыть журнал ТО на этом устройстве</small></span><b>›</b></button>
+          <button class="more-row" type="button" id="moreExport"><span class="feature-icon amber">⇩</span><span><strong>Сохранить копию</strong><small>Записи и прикреплённые документы</small></span><b>›</b></button>
+        </div>
+      </section>
+
       <nav class="app-tabs" aria-label="Разделы приложения">
         <button class="app-tab is-active" type="button" data-view="home" aria-current="page"><span>⌂</span><small>Главная</small></button>
-        <button class="app-tab" type="button" data-view="history"><span>↻</span><small>История ТО</small></button>
-        <button class="app-tab" type="button" data-view="documents"><span>▤</span><small>Документы</small></button>
+        <button class="app-tab" type="button" data-view="service"><span>◷</span><small>Обслуживание</small></button>
+        <button class="app-tab" type="button" data-view="history"><span>↻</span><small>История</small></button>
+        <button class="app-tab" type="button" data-view="expenses"><span>▥</span><small>Расходы</small></button>
+        <button class="app-tab" type="button" data-view="more"><span>···</span><small>Ещё</small></button>
       </nav>
     </section>
 
@@ -148,6 +209,12 @@
       <div class="form-section"><label>Проверка<select id="statusFilter"><option value="all">Все записи</option><option value="checked">Сопоставленные</option><option value="review">Требуют внимания</option></select></label><label>Стоимость<select id="costFilter"><option value="all">Любая сумма</option><option value="with">Только с суммой</option><option value="without">Без суммы</option></select></label><label>Дата с<input id="fromDateFilter" type="date"></label><label>Дата по<input id="throughDateFilter" type="date"></label></div>
       <div class="form-footer"><button class="secondary-button" id="resetFilters" type="button">Сбросить</button><button class="primary-button form-save" type="submit">Показать записи</button></div>
     </form>
+  </dialog>
+
+  <dialog class="form-dialog" id="moduleDialog" aria-labelledby="moduleDialogTitle">
+    <div class="dialog-handle"></div>
+    <header class="dialog-header"><div><span class="eyebrow">ЛИЧНЫЙ ГАРАЖ</span><h2 id="moduleDialogTitle">Новая запись</h2></div><button class="close-button" data-close="moduleDialog" aria-label="Закрыть">×</button></header>
+    <form id="moduleForm" class="form-scroll"></form>
   </dialog>
 
   <dialog class="pdf-dialog" id="pdfDialog" aria-label="Документ">
