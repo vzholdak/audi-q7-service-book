@@ -4,24 +4,24 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#10283d">
-  <meta name="description" content="Веб-приложение Audi Q7 для истории обслуживания, документов и расходов. Данные хранятся на устройстве.">
+  <meta name="description" content="Audi Q7 921 — приложение автомобиля: обслуживание, расходы и документы в одном месте.">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Audi Q7">
+  <meta name="apple-mobile-web-app-title" content="Audi Q7 921">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; frame-src blob:; object-src 'none'; base-uri 'self'; form-action 'self'">
   <link rel="manifest" href="manifest.webmanifest">
-  <link rel="icon" href="app-icon.png" sizes="1024x1024" type="image/png">
-  <link rel="apple-touch-icon" href="app-icon.png">
+  <link rel="icon" href="app-icon-192.png" sizes="192x192" type="image/png">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
   <link rel="stylesheet" href="styles.css">
-  <title>Audi Q7 — приложение для обслуживания</title>
+  <title>Audi Q7 · 921</title>
   <script src="app.js" defer></script>
 </head>
 <body>
   <main class="shell">
     <header class="topbar">
       <a class="brand" href="./" aria-label="Приложение Audi Q7 — главная">
-        <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M7 6.5h12a5 5 0 0 1 5 5v14H12a5 5 0 0 1-5-5z"/><path d="M12 11h7M12 15h7M12 19h4M23 24l3 3 5-6"/></svg></span>
-        <span><strong>Audi Q7</strong><small>приложение для обслуживания</small></span>
+        <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 80 36"><circle cx="16" cy="18" r="11"/><circle cx="32" cy="18" r="11"/><circle cx="48" cy="18" r="11"/><circle cx="64" cy="18" r="11"/></svg><b>921</b></span>
+        <span><strong>Audi Q7</strong><small>личный автомобиль · 921</small></span>
       </a>
       <div class="topbar-actions">
       <button class="icon-button" id="headerAdd" type="button" aria-label="Добавить запись" title="Добавить запись" hidden>
@@ -39,32 +39,46 @@
     <section class="welcome" id="welcome">
       <div class="welcome-orbit orbit-one"></div><div class="welcome-orbit orbit-two"></div>
       <div class="welcome-copy">
-        <span class="eyebrow">ВЕБ-ПРИЛОЖЕНИЕ ДЛЯ IPHONE</span>
-        <h1>Вся история<br>в одном месте</h1>
-        <p>История обслуживания, расходы и документы Audi Q7 — в одном приложении на iPhone.</p>
+        <span class="eyebrow">AUDI Q7 · 921</span>
+        <h1>Ваш автомобиль<br>в одном приложении</h1>
+        <p>Обслуживание, расходы и документы вашей Audi Q7 — в удобном личном приложении на iPhone.</p>
       </div>
       <div class="import-card">
         <div class="upload-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M4 15.5v4h16v-4"/></svg></div>
-        <h2>Открыть приложение</h2>
-        <p>Выберите готовый архив Audi Q7, чтобы открыть ваши записи. Можно также начать новый журнал. Данные останутся на этом устройстве.</p>
-        <button class="primary-button" id="welcomeImport" type="button">Открыть мой журнал <span aria-hidden="true">→</span></button>
-        <button class="secondary-button" id="createEmpty" type="button">Создать пустой журнал</button>
+        <h2>Открыть Audi Q7</h2>
+        <p>Загрузите ваш архив один раз — приложение откроет главный экран автомобиля, историю обслуживания и документы.</p>
+        <button class="primary-button" id="welcomeImport" type="button">Загрузить историю автомобиля <span aria-hidden="true">→</span></button>
+        <button class="secondary-button" id="createEmpty" type="button">Начать без архива</button>
         <div class="privacy-line"><span class="privacy-dot"></span>Файл не отправляется на сервер</div>
       </div>
     </section>
 
     <section class="dashboard" id="dashboard" hidden>
-      <section class="hero-card" aria-label="Сводка">
-        <div class="hero-topline"><span class="eyebrow">ИСТОРИЯ ОБСЛУЖИВАНИЯ</span><span class="status-pill"><i></i>На устройстве</span></div>
-        <h1 id="vehicleTitle">Мой автомобиль</h1>
-        <p id="heroSubtitle">История обслуживания и расходов</p>
-        <div class="stats-grid">
-          <div class="stat"><span>Записей</span><strong id="statRecords">—</strong></div>
-          <div class="stat"><span>Общие расходы</span><strong id="statTotal">—</strong></div>
-          <div class="stat"><span>Проверить</span><strong id="statReview">—</strong></div>
+      <section class="app-view home-view" id="homeView">
+        <section class="hero-card" aria-label="Главный экран автомобиля">
+          <div class="hero-topline"><span class="eyebrow">МОЙ AUDI</span><span class="status-pill"><i></i>Данные на iPhone</span></div>
+          <div class="vehicle-heading"><div><h1 id="vehicleTitle">Audi Q7</h1><p id="heroSubtitle">Личная история автомобиля</p></div><span class="plate-badge"><small>AUDI</small><strong>921</strong></span></div>
+          <div class="stats-grid">
+            <div class="stat"><span>Обслуживаний</span><strong id="statRecords">—</strong></div>
+            <div class="stat"><span>Общие расходы</span><strong id="statTotal">—</strong></div>
+            <div class="stat"><span>Проверить</span><strong id="statReview">—</strong></div>
+          </div>
+        </section>
+
+        <div class="home-section-heading"><div><span class="eyebrow">БЫСТРЫЙ ДОСТУП</span><h2>Ваш автомобиль</h2></div></div>
+        <div class="quick-actions">
+          <button class="quick-card" type="button" data-view="history"><span class="quick-icon">↻</span><span><strong>История ТО</strong><small><span id="quickRecordCount">0</span> записей · работы и пробег</small></span><b aria-hidden="true">›</b></button>
+          <button class="quick-card" type="button" data-view="documents"><span class="quick-icon document-icon">▤</span><span><strong>Документы</strong><small><span id="quickDocumentCount">0</span> файлов и сканов</small></span><b aria-hidden="true">›</b></button>
+          <button class="quick-card" type="button" id="homeAddRecord"><span class="quick-icon add-icon">＋</span><span><strong>Добавить обслуживание</strong><small>Записать новую работу или расход</small></span><b aria-hidden="true">›</b></button>
         </div>
+
+        <div class="home-section-heading recent-heading"><div><span class="eyebrow">ПОСЛЕДНЕЕ ОБСЛУЖИВАНИЕ</span><h2>Недавняя запись</h2></div><button class="text-button" type="button" data-view="history">Вся история →</button></div>
+        <button class="recent-card" id="recentRecord" type="button" hidden><span class="recent-date" id="recentDate">—</span><span class="recent-main"><strong id="recentWork">—</strong><small id="recentMeta">—</small></span><span class="recent-cost" id="recentCost">—</span></button>
+        <div class="empty-recent" id="emptyRecent"><strong>История пока пустая</strong><p>Загрузите архив или добавьте первое обслуживание.</p><button class="secondary-button" id="homeImport" type="button">Загрузить архив</button></div>
       </section>
 
+      <section class="app-view history-view" id="historyView" hidden>
+      <section class="history-title"><span class="eyebrow">AUDI Q7 · 921</span><h1>История ТО</h1><p>Работы, пробег, расходы и подтверждающие документы.</p></section>
       <section class="controls" aria-label="Поиск и фильтры">
         <label class="search-box">
           <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/></svg>
@@ -84,6 +98,19 @@
         <div class="empty-filter" id="emptyFilter" hidden><div class="empty-symbol">⌕</div><strong id="emptyTitle">Ничего не найдено</strong><p id="emptyMessage">Попробуйте изменить запрос или фильтры.</p><button class="secondary-button" id="emptyAdd" type="button" hidden>Добавить запись</button></div>
       </section>
       <footer class="footer-note"><span class="lock-mark">⌑</span><span>Ваши записи и документы хранятся в браузере на этом устройстве. Сохраните исходный ZIP отдельно как резервную копию.</span></footer>
+      </section>
+
+      <section class="app-view documents-view" id="documentsView" hidden>
+        <section class="history-title"><span class="eyebrow">AUDI Q7 · 921</span><h1>Документы</h1><p>Сканы и файлы, связанные с обслуживанием автомобиля.</p></section>
+        <div class="documents-list" id="documentsList"></div>
+        <div class="empty-filter" id="emptyDocuments" hidden><div class="empty-symbol">▤</div><strong>Документы не найдены</strong><p>Импортируйте архив Audi Q7, чтобы открыть приложенные сканы и PDF.</p></div>
+      </section>
+
+      <nav class="app-tabs" aria-label="Разделы приложения">
+        <button class="app-tab is-active" type="button" data-view="home" aria-current="page"><span>⌂</span><small>Главная</small></button>
+        <button class="app-tab" type="button" data-view="history"><span>↻</span><small>История ТО</small></button>
+        <button class="app-tab" type="button" data-view="documents"><span>▤</span><small>Документы</small></button>
+      </nav>
     </section>
 
     <footer class="welcome-footer" id="welcomeFooter">Личная копия истории · без учётной записи и облачного хранилища</footer>

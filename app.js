@@ -8,12 +8,27 @@ const ui = {
   welcome: $("#welcome"),
   welcomeFooter: $("#welcomeFooter"),
   dashboard: $("#dashboard"),
+  homeView: $("#homeView"),
+  historyView: $("#historyView"),
+  documentsView: $("#documentsView"),
   archiveInput: $("#archiveInput"),
   headerImport: $("#headerImport"),
   headerAdd: $("#headerAdd"),
   headerExport: $("#headerExport"),
   welcomeImport: $("#welcomeImport"),
   createEmpty: $("#createEmpty"),
+  homeImport: $("#homeImport"),
+  homeAddRecord: $("#homeAddRecord"),
+  recentRecord: $("#recentRecord"),
+  recentDate: $("#recentDate"),
+  recentWork: $("#recentWork"),
+  recentMeta: $("#recentMeta"),
+  recentCost: $("#recentCost"),
+  emptyRecent: $("#emptyRecent"),
+  quickRecordCount: $("#quickRecordCount"),
+  quickDocumentCount: $("#quickDocumentCount"),
+  documentsList: $("#documentsList"),
+  emptyDocuments: $("#emptyDocuments"),
   addRecord: $("#addRecord"),
   emptyAdd: $("#emptyAdd"),
   replaceImport: $("#replaceImport"),
@@ -84,6 +99,7 @@ let datasetMeta = null;
 let editingRecordId = null;
 let selectedRecordId = null;
 let activeFilters = { status: "all", cost: "all", from: "", through: "" };
+let activeView = "home";
 
 const moneyFormatter = new Intl.NumberFormat("ru-RU", {
   style: "currency", currency: "RUB", maximumFractionDigits: 2,
@@ -478,12 +494,19 @@ function renderApp(importedAt) {
   ui.headerAdd.hidden = false;
   ui.headerExport.hidden = importedRecords.length === 0;
   ui.vehicleTitle.textContent = datasetMeta?.vehicle?.model || "Audi Q7";
-  ui.heroSubtitle.textContent = datasetMeta?.vehicle?.model_year ? `Год выпуска ${datasetMeta.vehicle.model_year} · история обслуживания` : "История обслуживания и расходов";
+  ui.heroSubtitle.textContent = datasetMeta?.vehicle?.model_year
+    ? `${datasetMeta.vehicle.model_year} · личная история обслуживания`
+    : "Личная история обслуживания";
   const sorted = [...importedRecords].sort((a, b) => (recordDate(b)?.getTime() ?? 0) - (recordDate(a)?.getTime() ?? 0));
   const total = importedRecords.reduce((sum, record) => sum + (recordTotal(record) ?? 0), 0);
   ui.statRecords.textContent = importedRecords.length.toLocaleString("ru-RU");
   ui.statTotal.textContent = money(total);
   ui.statReview.textContent = importedRecords.filter(needsAttention).length.toLocaleString("ru-RU");
+  ui.quickRecordCount.textContent = importedRecords.length.toLocaleString("ru-RU");
+  const documentCount = importedRecords.reduce((sum, record) => sum + (record["Вложения"] ?? []).length, 0);
+  ui.quickDocumentCount.textContent = documentCount.toLocaleString("ru-RU");
+  renderHomeRecent(sorted[0] ?? null);
+  renderDocuments();
 
   const years = [...new Set(importedRecords.map((record) => String(record["Дата"] ?? "").slice(-4)).filter((year) => /^\d{4}$/.test(year)))].sort((a, b) => Number(b) - Number(a));
   const selected = ui.yearFilter.value;
@@ -491,7 +514,54 @@ function renderApp(importedAt) {
   if (years.includes(selected)) ui.yearFilter.value = selected;
   else ui.yearFilter.value = "all";
   renderRecords();
-  if (importedAt) document.title = "Журнал ТО — Audi Q7";
+  switchAppView(activeView);
+  if (importedAt) document.title = "Audi Q7 · 921";
+}
+
+function switchAppView(view) {
+  if (!["home", "history", "documents"].includes(view)) return;
+  activeView = view;
+  ui.homeView.hidden = view !== "home";
+  ui.historyView.hidden = view !== "history";
+  ui.documentsView.hidden = view !== "documents";
+  document.querySelectorAll(".app-tab").forEach((tab) => {
+    const selected = tab.dataset.view === view;
+    tab.classList.toggle("is-active", selected);
+    if (selected) tab.setAttribute("aria-current", "page");
+    else tab.removeAttribute("aria-current");
+  });
+}
+
+function renderHomeRecent(record) {
+  const hasRecord = Boolean(record);
+  ui.recentRecord.hidden = !hasRecord;
+  ui.emptyRecent.hidden = hasRecord;
+  if (!record) return;
+  const date = record["Дата"] || "Дата не указана";
+  const mileage = numeric(record["Пробег, км"]);
+  ui.recentDate.textContent = date;
+  ui.recentWork.textContent = record["Работы / событие"] || record["Документ"] || "Обслуживание";
+  ui.recentMeta.textContent = [record["Документ"], mileage === null ? null : `${mileage.toLocaleString("ru-RU")} км`].filter(Boolean).join(" · ") || "Открыть сведения";
+  ui.recentCost.textContent = money(recordTotal(record));
+  ui.recentRecord.dataset.recordId = recordId(record);
+}
+
+function renderDocuments() {
+  const items = [];
+  importedRecords.forEach((record) => {
+    (record["Вложения"] ?? []).forEach((attachment, index) => items.push({ record, attachment, index }));
+  });
+  ui.emptyDocuments.hidden = items.length > 0;
+  ui.documentsList.hidden = items.length === 0;
+  ui.documentsList.innerHTML = items.map(({ record, attachment, index }) => {
+    const fileName = attachment.name || attachmentPath(attachment).split("/").pop() || "Документ";
+    const recordName = record["Документ"] || record["Работы / событие"] || "Обслуживание";
+    const page = pageNumber(attachment);
+    const type = String(attachment.type ?? "").startsWith("image/") ? "ФОТО" : "PDF";
+    return `<button class="document-card" type="button" data-document-record="${escapeHTML(recordId(record))}" data-document-index="${index}">
+      <span class="document-file-icon">${type}</span><span class="document-card-main"><strong>${escapeHTML(fileName)}</strong><small>${escapeHTML(record["Дата"] || "")} · ${escapeHTML(recordName)}${page ? ` · страница ${page}` : ""}</small></span><span class="document-chevron" aria-hidden="true">›</span>
+    </button>`;
+  }).join("");
 }
 
 function filterCount() {
@@ -912,6 +982,16 @@ function bindEvents() {
   [ui.headerAdd, ui.addRecord, ui.emptyAdd].forEach((button) => button.addEventListener("click", () => openRecordEditor()));
   ui.headerExport.addEventListener("click", exportBackup);
   ui.createEmpty.addEventListener("click", createEmptyJournal);
+  ui.homeAddRecord.addEventListener("click", () => openRecordEditor());
+  ui.homeImport.addEventListener("click", openImportPicker);
+  ui.recentRecord.addEventListener("click", () => {
+    const record = importedRecords.find((item) => recordId(item) === ui.recentRecord.dataset.recordId);
+    if (record) showRecord(record);
+  });
+  document.querySelectorAll("[data-view]").forEach((button) => button.addEventListener("click", () => {
+    switchAppView(button.dataset.view);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }));
   ui.archiveInput.addEventListener("change", (event) => handleArchive(event.target.files?.[0]));
   ui.cancelImport.addEventListener("click", () => {
     importCancelled = true;
@@ -931,6 +1011,15 @@ function bindEvents() {
     if (!button) return;
     const record = importedRecords.find((item) => recordId(item) === button.dataset.recordId);
     if (record) showRecord(record);
+  });
+  ui.documentsList.addEventListener("click", async (event) => {
+    const button = event.target.closest("[data-document-index]");
+    if (!button) return;
+    const record = importedRecords.find((item) => recordId(item) === button.dataset.documentRecord);
+    const attachment = record?.["Вложения"]?.[Number(button.dataset.documentIndex)];
+    if (!attachment) return;
+    try { await showMedia(attachment); }
+    catch { showToast("Не удалось открыть документ. Проверьте, что архив полностью загружен.", 5500); }
   });
   ui.editRecord.addEventListener("click", () => {
     const record = importedRecords.find((item) => recordId(item) === selectedRecordId);
