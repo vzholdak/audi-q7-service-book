@@ -4,24 +4,24 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#10283d">
-  <meta name="description" content="Личная история обслуживания автомобиля на iPhone. Данные хранятся на устройстве.">
+  <meta name="description" content="Веб-приложение Audi Q7 для истории обслуживания, документов и расходов. Данные хранятся на устройстве.">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Журнал ТО">
+  <meta name="apple-mobile-web-app-title" content="Audi Q7">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; frame-src blob:; object-src 'none'; base-uri 'self'; form-action 'self'">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="app-icon.png" sizes="1024x1024" type="image/png">
   <link rel="apple-touch-icon" href="app-icon.png">
   <link rel="stylesheet" href="styles.css">
-  <title>Журнал ТО</title>
+  <title>Audi Q7 — приложение для обслуживания</title>
   <script src="app.js" defer></script>
 </head>
 <body>
   <main class="shell">
     <header class="topbar">
-      <a class="brand" href="./" aria-label="Журнал ТО — главная">
+      <a class="brand" href="./" aria-label="Приложение Audi Q7 — главная">
         <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M7 6.5h12a5 5 0 0 1 5 5v14H12a5 5 0 0 1-5-5z"/><path d="M12 11h7M12 15h7M12 19h4M23 24l3 3 5-6"/></svg></span>
-        <span><strong>Журнал ТО</strong><small>история обслуживания</small></span>
+        <span><strong>Audi Q7</strong><small>приложение для обслуживания</small></span>
       </a>
       <div class="topbar-actions">
       <button class="icon-button" id="headerAdd" type="button" aria-label="Добавить запись" title="Добавить запись" hidden>
@@ -39,16 +39,16 @@
     <section class="welcome" id="welcome">
       <div class="welcome-orbit orbit-one"></div><div class="welcome-orbit orbit-two"></div>
       <div class="welcome-copy">
-        <span class="eyebrow">ЛИЧНЫЙ ЖУРНАЛ АВТОМОБИЛЯ</span>
+        <span class="eyebrow">ВЕБ-ПРИЛОЖЕНИЕ ДЛЯ IPHONE</span>
         <h1>Вся история<br>в одном месте</h1>
-        <p>Записи, расходы и документы — удобно смотреть с телефона.</p>
+        <p>История обслуживания, расходы и документы Audi Q7 — в одном приложении на iPhone.</p>
       </div>
       <div class="import-card">
         <div class="upload-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M4 15.5v4h16v-4"/></svg></div>
-        <h2>Начнём с архива</h2>
-        <p>Загрузите архив Audi Q7 v6 или создайте журнал вручную. Записи и документы останутся на этом устройстве.</p>
-        <button class="primary-button" id="welcomeImport" type="button">Выбрать архив <span aria-hidden="true">→</span></button>
-        <button class="secondary-button" id="createEmpty" type="button">Начать без архива</button>
+        <h2>Открыть приложение</h2>
+        <p>Выберите готовый архив Audi Q7, чтобы открыть ваши записи. Можно также начать новый журнал. Данные останутся на этом устройстве.</p>
+        <button class="primary-button" id="welcomeImport" type="button">Открыть мой журнал <span aria-hidden="true">→</span></button>
+        <button class="secondary-button" id="createEmpty" type="button">Создать пустой журнал</button>
         <div class="privacy-line"><span class="privacy-dot"></span>Файл не отправляется на сервер</div>
       </div>
     </section>
