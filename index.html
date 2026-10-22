@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#10283d">
+  <meta name="description" content="Личная история обслуживания автомобиля на iPhone. Данные хранятся на устройстве.">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Журнал ТО">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; frame-src blob:; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="app-icon.png" sizes="1024x1024" type="image/png">
+  <link rel="apple-touch-icon" href="app-icon.png">
+  <link rel="stylesheet" href="styles.css">
+  <title>Журнал ТО</title>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <a class="brand" href="./" aria-label="Журнал ТО — главная">
+        <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M7 6.5h12a5 5 0 0 1 5 5v14H12a5 5 0 0 1-5-5z"/><path d="M12 11h7M12 15h7M12 19h4M23 24l3 3 5-6"/></svg></span>
+        <span><strong>Журнал ТО</strong><small>история обслуживания</small></span>
+      </a>
+      <button class="icon-button" id="headerImport" type="button" aria-label="Импортировать архив" title="Импортировать архив">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m0 0 4-4m-4 4-4-4M5 17v3h14v-3"/></svg>
+      </button>
+    </header>
+
+    <section class="welcome" id="welcome">
+      <div class="welcome-orbit orbit-one"></div><div class="welcome-orbit orbit-two"></div>
+      <div class="welcome-copy">
+        <span class="eyebrow">ЛИЧНЫЙ ЖУРНАЛ АВТОМОБИЛЯ</span>
+        <h1>Вся история<br>в одном месте</h1>
+        <p>Записи, расходы и документы — удобно смотреть с телефона.</p>
+      </div>
+      <div class="import-card">
+        <div class="upload-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M4 15.5v4h16v-4"/></svg></div>
+        <h2>Начнём с архива</h2>
+        <p>Выберите архив Audi Q7 v6 из приложения «Файлы». Его документы останутся на этом iPhone.</p>
+        <button class="primary-button" id="welcomeImport" type="button">Выбрать архив <span aria-hidden="true">→</span></button>
+        <div class="privacy-line"><span class="privacy-dot"></span>Файл не отправляется на сервер</div>
+      </div>
+    </section>
+
+    <section class="dashboard" id="dashboard" hidden>
+      <section class="hero-card" aria-label="Сводка">
+        <div class="hero-topline"><span class="eyebrow">ИСТОРИЯ ОБСЛУЖИВАНИЯ</span><span class="status-pill"><i></i>На устройстве</span></div>
+        <h1 id="vehicleTitle">Мой автомобиль</h1>
+        <p id="heroSubtitle">История обслуживания и расходов</p>
+        <div class="stats-grid">
+          <div class="stat"><span>Записей</span><strong id="statRecords">—</strong></div>
+          <div class="stat"><span>Общие расходы</span><strong id="statTotal">—</strong></div>
+          <div class="stat"><span>Последнее ТО</span><strong id="statLatest">—</strong></div>
+        </div>
+      </section>
+
+      <section class="controls" aria-label="Поиск и фильтры">
+        <label class="search-box">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/></svg>
+          <input id="search" type="search" placeholder="Работа, заказ-наряд, артикул" autocomplete="off">
+          <button id="clearSearch" class="clear-search" type="button" aria-label="Очистить поиск" hidden>×</button>
+        </label>
+        <div class="filter-row">
+          <label class="select-wrap"><span>Год</span><select id="yearFilter"><option>Все годы</option></select></label>
+          <label class="select-wrap sort-select"><span>Сортировка</span><select id="sortFilter"><option value="newest">Сначала новые</option><option value="oldest">Сначала старые</option><option value="cost">Сначала дорогие</option></select></label>
+          <button id="attentionFilter" class="filter-chip" type="button" aria-pressed="false"><span class="attention-dot"></span>Есть примечание</button>
+        </div>
+      </section>
+
+      <section class="records-section">
+        <div class="section-heading"><div><span class="eyebrow">ЛЕНТА ОБСЛУЖИВАНИЯ</span><h2>Записи <span id="visibleCount"></span></h2></div><button class="text-button" id="replaceImport" type="button">Заменить архив</button></div>
+        <div class="record-list" id="recordList"></div>
+        <div class="empty-filter" id="emptyFilter" hidden><div class="empty-symbol">⌕</div><strong>Ничего не найдено</strong><p>Попробуйте изменить запрос или фильтры.</p></div>
+      </section>
+      <footer class="footer-note"><span class="lock-mark">⌑</span><span>Ваши записи и документы хранятся в браузере на этом устройстве. Сохраните исходный ZIP отдельно как резервную копию.</span></footer>
+    </section>
+
+    <footer class="welcome-footer" id="welcomeFooter">Личная копия истории · без учётной записи и облачного хранилища</footer>
+  </main>
+
+  <input id="archiveInput" class="visually-hidden" type="file" accept=".zip,application/zip">
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+  <div class="progress-overlay" id="progressOverlay" hidden>
+    <div class="progress-card"><div class="spinner"></div><strong id="progressTitle">Импорт архива</strong><span id="progressText">Читаю файлы…</span><progress id="progressBar" max="100" value="0"></progress><button class="text-button cancel-import" id="cancelImport" type="button" hidden>Отменить</button></div>
+  </div>
+
+  <dialog class="detail-dialog" id="detailDialog" aria-labelledby="detailTitle">
+    <div class="dialog-handle"></div>
+    <header class="dialog-header"><div><span class="eyebrow" id="detailDate"></span><h2 id="detailTitle">Запись</h2></div><button class="close-button" data-close="detailDialog" aria-label="Закрыть">×</button></header>
+    <div class="detail-scroll" id="detailContent"></div>
+  </dialog>
+
+  <dialog class="pdf-dialog" id="pdfDialog" aria-label="Документ">
+    <header class="pdf-header"><div><strong id="pdfTitle">Документ</strong><span id="pdfPage"></span></div><a id="pdfOpen" class="pdf-open" target="_blank" rel="noopener">Открыть отдельно ↗</a><button class="close-button" data-close="pdfDialog" aria-label="Закрыть">×</button></header>
+    <iframe id="pdfFrame" title="Просмотр PDF"></iframe>
+  </dialog>
+</body>
+</html>

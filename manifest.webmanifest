@@ -1,0 +1,17 @@
+{
+  "id": "./",
+  "name": "Журнал ТО — история автомобиля",
+  "short_name": "Журнал ТО",
+  "description": "Личный журнал обслуживания автомобиля, документов и расходов.",
+  "lang": "ru-RU",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "orientation": "portrait",
+  "background_color": "#f5f7f8",
+  "theme_color": "#10283d",
+  "icons": [
+    {"src": "app-icon.png", "sizes": "1024x1024", "type": "image/png", "purpose": "any"}
+  ]
+}
