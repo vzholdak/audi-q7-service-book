@@ -1,6 +1,8 @@
 "use strict";
 
-const CACHE_NAME = "service-log-shell-v1";
+const CACHE_PREFIX = "audi-q7-service-book-shell-";
+const CACHE_NAME = `${CACHE_PREFIX}v2`;
+const LEGACY_CACHES = new Set(["service-log-shell-v1"]);
 const APP_FILES = [
   "./",
   "./index.html",
@@ -17,7 +19,7 @@ self.addEventListener("install", (event) => {
 self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches.keys()
-      .then((keys) => Promise.all(keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key))))
+      .then((keys) => Promise.all(keys.filter((key) => key !== CACHE_NAME && (key.startsWith(CACHE_PREFIX) || LEGACY_CACHES.has(key))).map((key) => caches.delete(key))))
       .then(() => self.clients.claim()),
   );
 });

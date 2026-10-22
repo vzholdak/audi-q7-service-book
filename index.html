@@ -23,9 +23,17 @@
         <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M7 6.5h12a5 5 0 0 1 5 5v14H12a5 5 0 0 1-5-5z"/><path d="M12 11h7M12 15h7M12 19h4M23 24l3 3 5-6"/></svg></span>
         <span><strong>Журнал ТО</strong><small>история обслуживания</small></span>
       </a>
+      <div class="topbar-actions">
+      <button class="icon-button" id="headerAdd" type="button" aria-label="Добавить запись" title="Добавить запись" hidden>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+      </button>
+      <button class="icon-button" id="headerExport" type="button" aria-label="Сохранить резервную копию" title="Сохранить резервную копию" hidden>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m0 0 4-4m-4 4-4-4M5 17v3h14v-3"/></svg>
+      </button>
       <button class="icon-button" id="headerImport" type="button" aria-label="Импортировать архив" title="Импортировать архив">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m0 0 4-4m-4 4-4-4M5 17v3h14v-3"/></svg>
       </button>
+      </div>
     </header>
 
     <section class="welcome" id="welcome">
@@ -38,8 +46,9 @@
       <div class="import-card">
         <div class="upload-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M4 15.5v4h16v-4"/></svg></div>
         <h2>Начнём с архива</h2>
-        <p>Выберите архив Audi Q7 v6 из приложения «Файлы». Его документы останутся на этом iPhone.</p>
+        <p>Загрузите архив Audi Q7 v6 или создайте журнал вручную. Записи и документы останутся на этом устройстве.</p>
         <button class="primary-button" id="welcomeImport" type="button">Выбрать архив <span aria-hidden="true">→</span></button>
+        <button class="secondary-button" id="createEmpty" type="button">Начать без архива</button>
         <div class="privacy-line"><span class="privacy-dot"></span>Файл не отправляется на сервер</div>
       </div>
     </section>
@@ -52,7 +61,7 @@
         <div class="stats-grid">
           <div class="stat"><span>Записей</span><strong id="statRecords">—</strong></div>
           <div class="stat"><span>Общие расходы</span><strong id="statTotal">—</strong></div>
-          <div class="stat"><span>Последнее ТО</span><strong id="statLatest">—</strong></div>
+          <div class="stat"><span>Проверить</span><strong id="statReview">—</strong></div>
         </div>
       </section>
 
@@ -63,16 +72,16 @@
           <button id="clearSearch" class="clear-search" type="button" aria-label="Очистить поиск" hidden>×</button>
         </label>
         <div class="filter-row">
-          <label class="select-wrap"><span>Год</span><select id="yearFilter"><option>Все годы</option></select></label>
-          <label class="select-wrap sort-select"><span>Сортировка</span><select id="sortFilter"><option value="newest">Сначала новые</option><option value="oldest">Сначала старые</option><option value="cost">Сначала дорогие</option></select></label>
-          <button id="attentionFilter" class="filter-chip" type="button" aria-pressed="false"><span class="attention-dot"></span>Есть примечание</button>
+          <label class="select-wrap"><span>Год</span><select id="yearFilter"><option value="all">Все годы</option></select></label>
+          <label class="select-wrap sort-select"><span>Сортировка</span><select id="sortFilter"><option value="newest">Сначала новые</option><option value="oldest">Сначала старые</option><option value="cost">Сначала дорогие</option><option value="mileage">По пробегу</option></select></label>
+          <button id="filterButton" class="filter-chip" type="button" aria-haspopup="dialog" aria-controls="filterDialog"><span class="attention-dot"></span><span id="filterButtonLabel">Фильтры</span></button>
         </div>
       </section>
 
       <section class="records-section">
-        <div class="section-heading"><div><span class="eyebrow">ЛЕНТА ОБСЛУЖИВАНИЯ</span><h2>Записи <span id="visibleCount"></span></h2></div><button class="text-button" id="replaceImport" type="button">Заменить архив</button></div>
+        <div class="section-heading"><div><span class="eyebrow">ЛЕНТА ОБСЛУЖИВАНИЯ</span><h2>Записи <span id="visibleCount"></span></h2></div><div class="section-actions"><button class="text-button" id="addRecord" type="button">+ Запись</button><button class="text-button" id="replaceImport" type="button">Импорт</button></div></div>
         <div class="record-list" id="recordList"></div>
-        <div class="empty-filter" id="emptyFilter" hidden><div class="empty-symbol">⌕</div><strong>Ничего не найдено</strong><p>Попробуйте изменить запрос или фильтры.</p></div>
+        <div class="empty-filter" id="emptyFilter" hidden><div class="empty-symbol">⌕</div><strong id="emptyTitle">Ничего не найдено</strong><p id="emptyMessage">Попробуйте изменить запрос или фильтры.</p><button class="secondary-button" id="emptyAdd" type="button" hidden>Добавить запись</button></div>
       </section>
       <footer class="footer-note"><span class="lock-mark">⌑</span><span>Ваши записи и документы хранятся в браузере на этом устройстве. Сохраните исходный ZIP отдельно как резервную копию.</span></footer>
     </section>
@@ -88,13 +97,35 @@
 
   <dialog class="detail-dialog" id="detailDialog" aria-labelledby="detailTitle">
     <div class="dialog-handle"></div>
-    <header class="dialog-header"><div><span class="eyebrow" id="detailDate"></span><h2 id="detailTitle">Запись</h2></div><button class="close-button" data-close="detailDialog" aria-label="Закрыть">×</button></header>
+    <header class="dialog-header"><div><span class="eyebrow" id="detailDate"></span><h2 id="detailTitle">Запись</h2></div><div class="dialog-actions"><button class="text-button" id="editRecord" type="button">Изменить</button><button class="text-button danger-text" id="deleteRecord" type="button">Удалить</button><button class="close-button" data-close="detailDialog" aria-label="Закрыть">×</button></div></header>
     <div class="detail-scroll" id="detailContent"></div>
+  </dialog>
+
+  <dialog class="form-dialog" id="recordDialog" aria-labelledby="recordDialogTitle">
+    <div class="dialog-handle"></div>
+    <header class="dialog-header"><div><span class="eyebrow">ЖУРНАЛ ОБСЛУЖИВАНИЯ</span><h2 id="recordDialogTitle">Новая запись</h2></div><button class="close-button" data-close="recordDialog" aria-label="Закрыть">×</button></header>
+    <form id="recordForm" class="form-scroll">
+      <div class="form-section"><label>Дата<input id="recordDate" name="date" type="date" required></label><label>Пробег, км<input id="recordMileage" name="mileage" type="number" inputmode="numeric" min="0" step="1" placeholder="Например, 125000"></label><label>Заказ-наряд или документ<input id="recordDocument" name="document" type="text" maxlength="160" placeholder="Например, Заказ-наряд №1234"></label><label>Работы или событие<textarea id="recordWork" name="work" rows="3" maxlength="2000" required placeholder="Что было сделано"></textarea></label><label>Запчасти и артикулы<textarea id="recordParts" name="parts" rows="2" maxlength="2000" placeholder="При необходимости"></textarea></label></div>
+      <div class="form-section"><h3>Стоимость, ₽</h3><div class="form-grid"><label>Работы<input id="recordLabor" name="labor" type="number" inputmode="decimal" min="0" step="0.01" placeholder="0"></label><label>Запчасти и материалы<input id="recordMaterials" name="materials" type="number" inputmode="decimal" min="0" step="0.01" placeholder="0"></label><label>Итого<input id="recordTotal" name="total" type="number" inputmode="decimal" min="0" step="0.01" placeholder="Автоматически"></label></div></div>
+      <div class="form-section"><label>Статус сверки<input id="recordStatus" name="status" type="text" maxlength="300" placeholder="Например, Добавлено вручную"></label><label>Примечание<textarea id="recordNote" name="note" rows="3" maxlength="2000" placeholder="Дополнительная информация"></textarea></label></div>
+      <div class="form-section"><label class="file-label">Добавить фото или PDF<input id="recordFiles" name="files" type="file" accept="application/pdf,image/*" multiple><small>Файлы сохраняются на этом устройстве.</small></label><div class="existing-files" id="existingFiles"></div></div>
+      <div class="form-error" id="recordFormError" role="alert" hidden></div>
+      <div class="form-footer"><button class="secondary-button" type="button" data-close="recordDialog">Отмена</button><button class="primary-button form-save" type="submit">Сохранить запись</button></div>
+    </form>
+  </dialog>
+
+  <dialog class="form-dialog filter-dialog" id="filterDialog" aria-labelledby="filterTitle">
+    <div class="dialog-handle"></div>
+    <header class="dialog-header"><div><span class="eyebrow">ПОИСК ПО ЖУРНАЛУ</span><h2 id="filterTitle">Фильтры</h2></div><button class="close-button" data-close="filterDialog" aria-label="Закрыть">×</button></header>
+    <form id="filterForm" class="form-scroll">
+      <div class="form-section"><label>Проверка<select id="statusFilter"><option value="all">Все записи</option><option value="checked">Сопоставленные</option><option value="review">Требуют внимания</option></select></label><label>Стоимость<select id="costFilter"><option value="all">Любая сумма</option><option value="with">Только с суммой</option><option value="without">Без суммы</option></select></label><label>Дата с<input id="fromDateFilter" type="date"></label><label>Дата по<input id="throughDateFilter" type="date"></label></div>
+      <div class="form-footer"><button class="secondary-button" id="resetFilters" type="button">Сбросить</button><button class="primary-button form-save" type="submit">Показать записи</button></div>
+    </form>
   </dialog>
 
   <dialog class="pdf-dialog" id="pdfDialog" aria-label="Документ">
     <header class="pdf-header"><div><strong id="pdfTitle">Документ</strong><span id="pdfPage"></span></div><a id="pdfOpen" class="pdf-open" target="_blank" rel="noopener">Открыть отдельно ↗</a><button class="close-button" data-close="pdfDialog" aria-label="Закрыть">×</button></header>
-    <iframe id="pdfFrame" title="Просмотр PDF"></iframe>
+    <iframe id="pdfFrame" title="Просмотр PDF"></iframe><img id="imageFrame" alt="Фото документа" hidden>
   </dialog>
 </body>
 </html>
