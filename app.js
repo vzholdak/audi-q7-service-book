@@ -293,7 +293,10 @@ function hideProgress() {
 
 async function handleArchive(file) {
   if (!file) return;
-  if (datasetMeta && importedRecords.length && !window.confirm("Импорт заменит записи этого журнала, включая добавленные вручную. Сначала сохраните резервную копию, если нужны все изменения. Продолжить?")) return;
+  const hasLocalData = Boolean(datasetMeta && (
+    importedRecords.length || datasetMeta.documentCount || Object.values(appData).some((items) => items.length)
+  ));
+  if (hasLocalData && !window.confirm("Импорт заменит текущий журнал, документы и личные списки — запчасти, масла, задачи ТО и напоминания. Сначала сохраните резервную копию, если хотите оставить эти данные. Продолжить?")) return;
   showProgress();
   setProgress("Открываю архив", "Проверяю список файлов…", 2);
   try {
@@ -1311,3 +1314,4 @@ async function startApp() {
 }
 
 startApp();
+
