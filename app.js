@@ -558,9 +558,7 @@ function renderApp(importedAt) {
   ui.headerAdd.hidden = false;
   ui.headerExport.hidden = importedRecords.length === 0 && !Object.values(appData).some((list) => list.length);
   ui.vehicleTitle.textContent = datasetMeta?.vehicle?.model || "Audi Q7";
-  ui.heroSubtitle.textContent = datasetMeta?.vehicle?.model_year
-    ? `${datasetMeta.vehicle.model_year} · ваш автомобиль`
-    : "История и обслуживание автомобиля";
+  ui.heroSubtitle.textContent = "4L 3.0 TDI (CRCA) 2013 · VIN: WAUZZZ4L7DD008548";
   const sorted = [...importedRecords].sort((a, b) => (recordDate(b)?.getTime() ?? 0) - (recordDate(a)?.getTime() ?? 0));
   ui.statRecords.textContent = importedRecords.length.toLocaleString("ru-RU");
   ui.quickRecordCount.textContent = importedRecords.length.toLocaleString("ru-RU");
@@ -594,7 +592,7 @@ function switchAppView(view) {
   if (!views[view]) return;
   activeView = view;
   Object.entries(views).forEach(([key, element]) => { element.hidden = key !== view; });
-  const tabView = ["parts", "oils", "reminders", "documents"].includes(view) ? "more" : view;
+  const tabView = view === "service" ? "home" : ["oils", "documents"].includes(view) ? "more" : view;
   document.querySelectorAll(".app-tab").forEach((tab) => {
     const selected = tab.dataset.view === tabView;
     tab.classList.toggle("is-active", selected);
