@@ -349,58 +349,110 @@ button { -webkit-tap-highlight-color: transparent; }
 }
 
 
-/* Approved Audi Q7 home screen — signed-off mockup */
-.topbar { padding: 9px 0 8px; border: 0; }
-.brand { width: 100%; flex-direction: row-reverse; justify-content: space-between; align-items: center; gap: 12px; }
-.brand-mark b { display: none; }
-.brand-mark svg path { display: none; }
-.brand > span:last-child { min-width: 0; }
-.brand > span:last-child strong { font-size: 20px; color: #111820; }
-.brand > span:last-child small { display: block; max-width: 290px; color: #394550; font-size: 10px; line-height: 1.35; white-space: normal; }
-.topbar-actions { display: none !important; }
-.dashboard { padding-top: 0; }
-.approved-car-panel { width: 100%; margin: 1px 0 11px; overflow: hidden; border-radius: 13px; background: #f4f6f7; }
-.approved-car-panel img { display: block; width: 100%; height: auto; aspect-ratio: 2.35 / 1; object-fit: cover; object-position: center 48%; }
-.service-glance { margin-top: 0; padding: 13px 13px 13px 15px; border: 1px solid #edf0f2; border-radius: 14px; background: #fff; box-shadow: 0 3px 12px rgba(22,46,62,.035); }
-.service-glance .eyebrow { color: #596674; letter-spacing: .7px; }
-.service-glance strong { font-size: 13px; line-height: 1.3; }
-.service-glance small { font-size: 10px; }
-.round-arrow { width: 30px; height: 30px; border: 0; border-radius: 50%; color: #77828b; background: transparent; font-size: 25px; }
-.approved-feature-grid { margin-top: 9px; gap: 8px; }
-.approved-feature-grid .feature-card { min-height: 66px; display: flex; align-items: center; justify-items: initial; gap: 9px; padding: 9px 10px; border: 1px solid #edf0f2; border-radius: 13px; box-shadow: none; }
-.approved-feature-grid .feature-icon { flex: 0 0 34px; width: 34px; height: 34px; display: grid; place-items: center; margin: 0; border-radius: 10px; font-size: 17px; }
-.feature-copy { min-width: 0; display: grid; gap: 3px; }
-.approved-feature-grid .feature-card strong { font-size: 10px; line-height: 1.25; }
-.approved-feature-grid .feature-card small { font-size: 9px; line-height: 1.2; }
-.app-tabs { grid-template-columns: repeat(5, minmax(0,1fr)); }
-@media (min-width: 700px) { .approved-car-panel img { max-height: 250px; object-position: center 46%; } }
 
 
-/* Approved Audi Q7 Care layout: header, vehicle, next service, shortcuts, bottom tabs */
-.topbar { padding: 9px 0 8px; border: 0; }
-.brand { width: 100%; display: flex; flex-direction: row; justify-content: space-between; align-items: center; gap: 12px; }
-.brand-mark { order: 2; display: flex; align-items: center; width: 72px; height: 34px; padding: 0; border: 0; background: transparent; }
-.brand-mark svg { display: block; width: 72px; height: 30px; }
-.brand-mark b { display: none; }
-.brand > span:last-child { order: 1; min-width: 0; }
-.brand > span:last-child strong { font-size: 21px; color: #111820; }
-.brand > span:last-child small { display: block; max-width: 275px; color: #394550; font-size: 11px; line-height: 1.35; white-space: normal; }
-.topbar-actions { display: none !important; }
-.dashboard { padding-top: 0; }
-.approved-car-panel { width: 100%; margin: 1px 0 11px; overflow: hidden; border-radius: 14px; background: #f4f6f7; }
-.approved-car-panel img { display: block; width: 100%; height: auto; aspect-ratio: 1.72 / 1; object-fit: cover; object-position: center 48%; }
-.service-glance { display: flex; align-items: center; gap: 12px; margin-top: 0; padding: 13px 14px; border: 1px solid #edf0f2; border-radius: 14px; color: var(--ink); background: #fff; box-shadow: 0 3px 12px rgba(22,46,62,.035); }
-.service-glance-icon { flex: 0 0 48px; width: 48px; height: 48px; display: grid; place-items: center; border-radius: 13px; color: #f28b19; background: #fff5e8; font-size: 27px; }
-.service-glance-copy { flex: 1; min-width: 0; display: grid; gap: 3px; }
-.service-glance .eyebrow { color: #596674; letter-spacing: .7px; }
-.service-glance strong { font-size: 15px; line-height: 1.25; }
-.service-glance small { font-size: 11px; }
-.round-arrow { width: 28px; height: 34px; border: 0; color: #7b8792; background: transparent; font-size: 25px; }
-.approved-feature-grid { margin-top: 9px; gap: 8px; }
-.approved-feature-grid .feature-card { min-height: 72px; display: flex; align-items: center; justify-items: initial; gap: 9px; padding: 10px; border: 1px solid #edf0f2; border-radius: 13px; box-shadow: none; }
-.approved-feature-grid .feature-icon { flex: 0 0 38px; width: 38px; height: 38px; display: grid; place-items: center; margin: 0; border-radius: 11px; font-size: 19px; }
-.feature-copy { min-width: 0; display: grid; gap: 3px; }
-.approved-feature-grid .feature-card strong { font-size: 11px; line-height: 1.25; }
-.approved-feature-grid .feature-card small { font-size: 9px; line-height: 1.2; }
-.app-tabs { grid-template-columns: repeat(5, minmax(0,1fr)); }
-@media (min-width: 700px) { .approved-car-panel img { max-height: 330px; object-position: center 46%; } }
+/* Audi Q7 Care — согласованная система экранов */
+:root {
+  --ink:#151b22; --ink-soft:#65717d; --muted:#89939d; --paper:#f5f7f9;
+  --surface:#fff; --line:#e7ebef; --navy:#145eea; --blue:#145eea;
+  --mint:#dff4ec; --mint-ink:#16836b; --amber:#f28a17;
+  --shadow:0 5px 18px rgba(20,38,56,.055);
+}
+html,body { background:var(--paper); }
+.shell { width:min(100%,480px); padding:0 18px calc(96px + env(safe-area-inset-bottom)); }
+.topbar { min-height:66px; padding-top:env(safe-area-inset-top); }
+.brand { width:100%; display:flex; flex-direction:row; justify-content:space-between; align-items:center; gap:12px; }
+.brand > span:last-child { order:1; min-width:0; }
+.brand > span:last-child strong { font-size:25px; font-weight:760; letter-spacing:-.7px; color:#111820; }
+.brand > span:last-child small { display:block; margin-top:3px; max-width:280px; color:#2f3c48; font-size:11px; line-height:1.35; white-space:normal; }
+.brand-mark { order:2; width:66px; height:36px; display:flex; align-items:center; justify-content:center; padding:0; border:0; border-radius:0; background:transparent; box-shadow:none; }
+.brand-mark svg { width:66px; height:30px; }
+.brand-mark b { display:none; }
+.topbar-actions { display:none !important; }
+.dashboard { padding-top:0; padding-bottom:calc(98px + env(safe-area-inset-bottom)); }
+.approved-car-panel { width:100%; margin:3px 0 12px; overflow:hidden; border-radius:14px; background:#e9edf0; }
+.approved-car-panel img { display:block; width:100%; height:auto; aspect-ratio:1.6/1; object-fit:cover; object-position:center 50%; }
+.service-glance { display:flex; align-items:center; gap:12px; margin:0 0 10px; padding:13px 14px; border:1px solid #edf0f2; border-radius:16px; color:var(--ink); background:#fff; box-shadow:var(--shadow); }
+.service-glance-icon { width:48px; height:48px; flex:0 0 48px; display:grid; place-items:center; border-radius:13px; color:var(--amber); background:#fff3e5; font-size:26px; }
+.service-glance-copy { flex:1; min-width:0; display:grid; gap:4px; }
+.service-glance .eyebrow { color:#6d7882; letter-spacing:.8px; }
+.service-glance strong { font-size:15px; line-height:1.3; }
+.service-glance small { color:#78838d; font-size:11px; line-height:1.35; }
+.round-arrow { width:34px; height:34px; flex:none; border:0; border-radius:50%; color:#fff; background:#152f45; font-size:22px; }
+.approved-feature-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:9px; margin-top:0; }
+.approved-feature-grid .feature-card { min-height:88px; display:flex; align-items:center; gap:10px; padding:11px 10px; border:1px solid #edf0f2; border-radius:15px; box-shadow:none; background:#fff; }
+.approved-feature-grid .feature-icon { width:39px; height:39px; flex:0 0 39px; display:grid; place-items:center; margin:0; border-radius:12px; font-size:20px; }
+.feature-copy { min-width:0; display:grid; gap:4px; }
+.approved-feature-grid .feature-card strong { font-size:11px; line-height:1.25; }
+.approved-feature-grid .feature-card small { color:#89939d; font-size:9px; line-height:1.3; }
+.feature-icon.blue { color:#145eea; background:#edf4ff; }
+.feature-icon.mint { color:#149c80; background:#e6f7f1; }
+.feature-icon.amber { color:#ee8717; background:#fff3e5; }
+.feature-icon.violet { color:#7755d8; background:#f1edff; }
+.feature-icon.rose { color:#df3e54; background:#fff0f2; }
+.history-title { margin:10px 2px 18px; }
+.history-title .eyebrow { color:#7b8792; }
+.history-title h1 { margin:5px 0 5px; color:#151b22; font-size:25px; font-weight:750; letter-spacing:-.65px; }
+.history-title p { margin:0; color:#7a8590; font-size:12px; line-height:1.45; }
+.plan-card { padding:16px; border:1px solid #edf0f2; border-radius:17px; background:#fff; box-shadow:var(--shadow); }
+.plan-card-top { display:flex; align-items:center; gap:10px; }
+.plan-card-top .feature-icon { width:48px; height:48px; border-radius:13px; font-size:25px; }
+.plan-card-top .eyebrow { color:#6d7882; }
+.plan-card h2 { margin:12px 0 5px; font-size:19px; line-height:1.25; letter-spacing:-.4px; }
+.plan-card p { color:#75818c; font-size:12px; line-height:1.5; }
+.primary-button { background:#145eea; border-radius:13px; box-shadow:none; }
+.compact-button { min-height:46px; justify-content:center; gap:10px; font-size:13px; }
+.module-heading { margin:21px 2px 11px; }
+.module-heading h2 { margin:4px 0 0; font-size:19px; letter-spacing:-.35px; }
+.module-list { gap:8px; }
+.module-row { min-height:66px; gap:11px; padding:11px; border:1px solid #edf0f2; border-radius:14px; box-shadow:none; }
+.module-row-main strong { color:#1b2229; font-size:12px; }
+.module-row-main small { color:#7c8791; font-size:10px; }
+.module-row-meta strong { color:#1b2229; }
+.module-empty { padding:24px 16px; border:1px dashed #dce3e8; border-radius:15px; background:#fff; }
+.expense-total-card { padding:17px; border:1px solid #edf0f2; border-radius:16px; color:#171d24; background:#fff; box-shadow:none; }
+.expense-total-card .eyebrow { color:#68747f; }
+.expense-total-card strong { font-size:29px; color:#151b22; }
+.expense-total-card small { color:#7c8791; }
+.expense-chart { min-height:148px; gap:9px; padding:15px 12px 11px; border:1px solid #edf0f2; border-radius:15px; box-shadow:none; }
+.chart-track { background:#edf2f8; }
+.chart-bar { background:#4288f5; }
+.chart-value { color:#4778bd; font-size:9px; }
+.collection-search { margin:14px 0 16px; }
+.search-box { min-height:46px; border-radius:13px; box-shadow:none; }
+.search-box input { font-size:13px; }
+.oil-spec-card { display:grid; gap:5px; margin:13px 0 12px; padding:13px 15px; border:1px solid #e1ebf8; border-radius:14px; background:#edf5ff; }
+.oil-spec-card .eyebrow { color:#4d78ad; letter-spacing:.65px; }
+.oil-spec-card strong { color:#1a3150; font-size:16px; }
+.oil-spec-card small { color:#5f7185; font-size:11px; }
+.more-list { gap:8px; }
+.more-row { min-height:65px; border:1px solid #edf0f2; border-radius:14px; box-shadow:none; }
+.app-tabs { left:50%; bottom:0; width:min(100vw,480px); grid-template-columns:repeat(5,minmax(0,1fr)); padding:7px 9px calc(7px + env(safe-area-inset-bottom)); border-top:1px solid #e8edf1; background:rgba(255,255,255,.97); box-shadow:0 -4px 18px rgba(20,38,56,.05); }
+.app-tab { min-height:49px; gap:3px; border-radius:12px; color:#83909b; }
+.app-tab span { font-size:20px; }
+.app-tab small { font-size:9px; font-weight:650; }
+.app-tab.is-active { color:#145eea; background:#edf4ff; }
+.controls { margin:14px 0 20px; }
+.filter-row { gap:6px; }
+.select-wrap,.filter-chip { border-radius:11px; }
+.section-heading h2 { font-size:20px; }
+.record-list { gap:8px; }
+.record-card { grid-template-columns:44px minmax(0,1fr) auto; gap:9px; padding:12px 10px; border-radius:14px; box-shadow:none; }
+.record-date { width:42px; min-height:46px; border-radius:11px; color:#145eea; background:#edf4ff; }
+.record-main strong { font-size:12px; }
+.record-main small { font-size:10px; }
+.record-price { font-size:11px; }
+.detail-dialog,.form-dialog { border-radius:20px 20px 0 0; }
+.detail-block,.form-section { border-radius:14px; }
+@media (min-width:620px) {
+  .shell { padding-right:18px; padding-left:18px; }
+  .welcome { min-height:720px; }
+  .detail-dialog,.form-dialog { border-radius:20px; }
+}
+@media (max-width:390px) {
+  .shell { padding-right:14px; padding-left:14px; }
+  .approved-feature-grid .feature-card { min-height:80px; padding:9px 8px; gap:8px; }
+  .approved-feature-grid .feature-icon { width:34px; height:34px; flex-basis:34px; }
+  .approved-feature-grid .feature-card strong { font-size:10px; }
+  .app-tabs { width:100vw; }
+}

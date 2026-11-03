@@ -76,15 +76,20 @@
       </section>
 
       <section class="app-view service-view" id="serviceView" hidden>
-        <section class="history-title"><span class="eyebrow">AUDI Q7 · 921</span><h1>Обслуживание</h1><p>Планируйте работы и отмечайте выполненные задачи.</p></section>
-        <section class="plan-card"><div class="plan-card-top"><span class="feature-icon mint">◷</span><span class="eyebrow">БЛИЖАЙШЕЕ ОБСЛУЖИВАНИЕ</span></div><h2 id="planTitle">План пока пуст</h2><p id="planMeta">Добавьте дату или пробег следующего ТО и список работ.</p><button class="primary-button compact-button" id="setPlanButton" type="button">Настроить обслуживание <span>→</span></button></section>
-        <div class="section-heading module-heading"><div><span class="eyebrow">ВАШ ПЛАН</span><h2>Работы</h2></div><button class="text-button" id="addServiceTask" type="button">+ Добавить</button></div>
+        <section class="history-title"><span class="eyebrow">AUDI Q7 · 921</span><h1>Следующее ТО</h1><p>План обслуживания вашего автомобиля.</p></section>
+        <section class="plan-card">
+          <div class="plan-card-top"><span class="feature-icon amber">▰</span><span class="eyebrow">БЛИЖАЙШЕЕ ОБСЛУЖИВАНИЕ</span></div>
+          <h2 id="planTitle">Пока не запланировано</h2>
+          <p id="planMeta">Добавьте дату или пробег следующего ТО. Сроки появятся только после сохранения плана.</p>
+          <button class="primary-button compact-button" id="setPlanButton" type="button">Запланировать ТО <span>→</span></button>
+        </section>
+        <div class="section-heading module-heading"><div><span class="eyebrow">ПЛАН ОБСЛУЖИВАНИЯ</span><h2>Что будет сделано</h2></div><button class="text-button" id="addServiceTask" type="button">+ Добавить</button></div>
         <div class="module-list" id="serviceTaskList"></div>
-        <div class="module-empty" id="emptyServiceTasks"><span>✓</span><strong>Здесь появится план работ</strong><p>Создайте задачу и укажите дату или пробег, когда её нужно выполнить.</p><button class="secondary-button" type="button" data-open-module="serviceTask">Добавить работу</button></div>
+        <div class="module-empty" id="emptyServiceTasks"><span>✓</span><strong>Работы пока не добавлены</strong><p>Создайте задачу и укажите дату или пробег, когда её нужно выполнить.</p><button class="secondary-button" type="button" data-open-module="serviceTask">Добавить работу</button></div>
       </section>
 
       <section class="app-view history-view" id="historyView" hidden>
-      <section class="history-title"><span class="eyebrow">AUDI Q7 · 921</span><h1>История ТО</h1><p>Работы, пробег, расходы и подтверждающие документы.</p></section>
+      <section class="history-title"><span class="eyebrow">AUDI Q7 · 921</span><h1>История ТО и ремонты</h1><p>Работы, даты, пробег, расходы и документы из вашего журнала.</p></section>
       <section class="controls" aria-label="Поиск и фильтры">
         <label class="search-box">
           <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/></svg>
@@ -107,13 +112,13 @@
       </section>
 
       <section class="app-view documents-view" id="documentsView" hidden>
-        <section class="history-title"><span class="eyebrow">AUDI Q7 · 921</span><h1>Документы</h1><p>Сканы и файлы, связанные с обслуживанием автомобиля.</p></section>
+        <section class="history-title"><span class="eyebrow">AUDI Q7 · 921</span><h1>Документы и фото</h1><p>Файлы и сканы из импортированного архива и записей обслуживания.</p></section>
         <div class="documents-list" id="documentsList"></div>
         <div class="empty-filter" id="emptyDocuments" hidden><div class="empty-symbol">▤</div><strong>Документы не найдены</strong><p>Импортируйте архив Audi Q7, чтобы открыть приложенные сканы и PDF.</p></div>
       </section>
 
       <section class="app-view expenses-view" id="expensesView" hidden>
-        <section class="history-title"><span class="eyebrow">AUDI Q7 · 921</span><h1>Расходы</h1><p>Суммы рассчитаны по записям в вашей истории ТО.</p></section>
+        <section class="history-title"><span class="eyebrow">AUDI Q7 · 921</span><h1>Расходы</h1><p>Итоги рассчитаны только по суммам, указанным в журнале.</p></section>
         <section class="expense-total-card"><span class="eyebrow">ВСЕГО ПО ИСТОРИИ</span><strong id="expenseTotal">—</strong><small id="expenseSubtitle">Суммы из подтверждённых записей</small></section>
         <div class="section-heading module-heading"><div><span class="eyebrow">ПО ГОДАМ</span><h2>Расходы на обслуживание</h2></div></div>
         <div class="expense-chart" id="expenseChart"></div>
@@ -123,7 +128,7 @@
       </section>
 
       <section class="app-view collection-view" id="partsView" hidden>
-        <section class="history-title"><span class="eyebrow">МОЙ КАТАЛОГ</span><h1>Запчасти</h1><p>Сохраняйте артикулы, цены и заметки для своего автомобиля.</p></section>
+        <section class="history-title"><span class="eyebrow">МОЙ КАТАЛОГ</span><h1>Каталог запчастей</h1><p>Артикулы, цены и заметки для вашего Audi Q7.</p></section>
         <label class="search-box collection-search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/></svg><input id="partsSearch" type="search" placeholder="Название или артикул" autocomplete="off"></label>
         <div class="section-heading module-heading"><div><span class="eyebrow">ВАШИ ЗАПИСИ</span><h2>Каталог</h2></div><button class="text-button" id="addPart" type="button">+ Добавить</button></div>
         <div class="module-list" id="partsList"></div>
@@ -131,15 +136,15 @@
       </section>
 
       <section class="app-view collection-view" id="oilsView" hidden>
-        <section class="history-title"><span class="eyebrow">МОЙ КАТАЛОГ</span><h1>Масла</h1><p>Запишите марку, вязкость и допуск, указанные для вашего автомобиля.</p></section>
-        <label class="search-box collection-search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/></svg><input id="oilsSearch" type="search" placeholder="Марка, вязкость или допуск" autocomplete="off"></label>
+        <section class="history-title"><span class="eyebrow">МОЙ КАТАЛОГ</span><h1>Моторное масло</h1><p>Сохранённые варианты и характеристики масла.</p></section>
+        <section class="oil-spec-card"><span class="eyebrow">ДОПУСК ДЛЯ ДВИГАТЕЛЯ</span><strong>VW 504 00 / 507 00</strong><small>Вязкость: 5W-30</small></section><label class="search-box collection-search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/></svg><input id="oilsSearch" type="search" placeholder="Марка, вязкость или допуск" autocomplete="off"></label>
         <div class="section-heading module-heading"><div><span class="eyebrow">ВАШИ ЗАПИСИ</span><h2>Подборка</h2></div><button class="text-button" id="addOil" type="button">+ Добавить</button></div>
         <div class="module-list" id="oilsList"></div>
         <div class="module-empty" id="emptyOils"><span>◉</span><strong>Список масел пуст</strong><p>Добавляйте только те характеристики и допуски, которые подтверждены документацией автомобиля.</p><button class="secondary-button" type="button" data-open-module="oil">Добавить масло</button></div>
       </section>
 
       <section class="app-view reminders-view" id="remindersView" hidden>
-        <section class="history-title"><span class="eyebrow">ВАШ AUDI Q7</span><h1>Напоминания</h1><p>Запланируйте замену расходников или дату следующего визита.</p></section>
+        <section class="history-title"><span class="eyebrow">ВАШ AUDI Q7</span><h1>Напоминания</h1><p>Контролируйте запланированные работы по дате и пробегу.</p></section>
         <div class="section-heading module-heading"><div><span class="eyebrow">ПЛАНЫ И СРОКИ</span><h2>Напоминания</h2></div><button class="text-button" id="addReminder" type="button">+ Добавить</button></div>
         <div class="module-list" id="remindersList"></div>
         <div class="module-empty" id="emptyReminders"><span>♧</span><strong>Напоминаний пока нет</strong><p>Добавьте дату или пробег, к которому нужно вернуться.</p><button class="secondary-button" type="button" data-open-module="reminder">Создать напоминание</button></div>

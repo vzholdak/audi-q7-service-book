@@ -2,7 +2,7 @@
   "id": "./",
   "name": "Audi Q7 · 921",
   "short_name": "Audi 921",
-  "description": "Личный гараж Audi Q7: обслуживание, история, расходы, запчасти, масла и напоминания.",
+  "description": "Личное приложение обслуживания Audi Q7: история, запчасти, масла, напоминания и расходы.",
   "lang": "ru-RU",
   "start_url": "./",
   "scope": "./",
@@ -12,7 +12,7 @@
     "minimal-ui"
   ],
   "orientation": "portrait",
-  "background_color": "#f5f7f8",
+  "background_color": "#f5f7f9",
   "theme_color": "#ffffff",
   "icons": [
     {
