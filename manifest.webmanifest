@@ -1,8 +1,8 @@
 {
   "id": "./",
   "name": "Audi Q7 · 921",
-  "short_name": "Audi Q7",
-  "description": "Личный гараж Audi Q7: обслуживание, история, расходы, запчасти и напоминания.",
+  "short_name": "Audi 921",
+  "description": "Личный гараж Audi Q7: обслуживание, история, расходы, запчасти, масла и напоминания.",
   "lang": "ru-RU",
   "start_url": "./",
   "scope": "./",
@@ -22,9 +22,9 @@
       "purpose": "any"
     },
     {
-      "src": "app-icon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
+      "src": "app-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
       "purpose": "any"
     }
   ]
