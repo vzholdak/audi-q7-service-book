@@ -21,7 +21,7 @@
     <header class="topbar">
       <a class="brand" href="./" aria-label="Приложение Audi Q7 — главная">
         <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 80 44"><defs><linearGradient id="brandChrome" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#737b82"/><stop offset=".28" stop-color="#fff"/><stop offset=".56" stop-color="#8c959c"/><stop offset=".79" stop-color="#fff"/><stop offset="1" stop-color="#626970"/></linearGradient></defs><g fill="none" stroke="url(#brandChrome)" stroke-width="3"><circle cx="16" cy="15" r="10"/><circle cx="32" cy="15" r="10"/><circle cx="48" cy="15" r="10"/><circle cx="64" cy="15" r="10"/></g><path d="M7 31H73" stroke="#e32936" stroke-width="1.5"/></svg><b>921</b></span>
-        <span><strong>Audi Q7</strong><small>личный автомобиль · 921</small></span>
+        <span><strong>Audi Q7</strong><small id="heroSubtitle">4L 3.0 TDI (CRCA) 2013 · VIN: WAUZZZ4L7DD008548</small></span>
       </a>
       <div class="topbar-actions">
       <button class="icon-button" id="headerAdd" type="button" aria-label="Добавить запись" title="Добавить запись" hidden>
@@ -55,31 +55,24 @@
 
     <section class="dashboard" id="dashboard" hidden>
       <section class="app-view home-view" id="homeView">
-        <section class="hero-card" aria-label="Главный экран автомобиля">
-          <div class="hero-topline"><span class="eyebrow">МОЙ AUDI</span><span class="status-pill"><i></i>Личный гараж</span></div>
-          <div class="vehicle-heading"><div><h1 id="vehicleTitle">Audi Q7</h1><p id="heroSubtitle">История и обслуживание автомобиля</p></div><span class="plate-badge"><small>AUDI</small><strong>921</strong></span></div>
-          <svg class="hero-car" viewBox="0 20 520 140" role="img" aria-label="Иллюстрация внедорожника Audi Q7"><path class="car-shadow" d="M42 139h438l-24 11H64z"/><path class="car-body" d="M58 111 67 91l29-9 28-34c7-9 17-13 29-13h177c15 0 26 4 36 15l30 32 49 7c17 3 28 12 34 27l6 15H54l2-13z"/><path class="car-window" d="m128 77 22-29c2-3 5-4 10-4h61v34h-93zm103-33h94c8 0 14 3 19 9l22 24h-135z"/><path class="car-detail" d="M56 111h34m354 0h33M75 94h45m278 0h56M224 45v72m11-39v38m132-39 5 40M91 117h330"/><path class="car-grille" d="M60 94h31l-3 21H54z"/><circle class="wheel" cx="145" cy="124" r="30"/><circle class="wheel-inner" cx="145" cy="124" r="14"/><circle class="wheel" cx="386" cy="124" r="30"/><circle class="wheel-inner" cx="386" cy="124" r="14"/><path class="headlight" d="m94 83 28-1-9 13H76z"/><path class="tail-light" d="m443 82 16 5 4 8h-20z"/><path class="roof-rail" d="M144 35h184"/></svg>
-          <div class="hero-bottom"><span>Ваша история обслуживания</span><strong><span id="statRecords">0</span> записей</strong></div>
+        <section class="approved-car-panel" aria-label="Audi Q7 4L 3.0 TDI CRCA 2013">
+          <img src="audi-q7-approved-car.jpg" alt="Audi Q7 4L 3.0 TDI CRCA 2013" width="700" height="298">
         </section>
-
         <section class="service-glance" id="serviceGlance">
-          <div><span class="eyebrow">СЛЕДУЮЩЕЕ ТО</span><strong id="serviceGlanceTitle">Пока не запланировано</strong><small id="serviceGlanceMeta">Добавьте напоминание о предстоящих работах</small></div>
-          <button class="round-arrow" type="button" data-view="service" aria-label="Открыть план обслуживания">→</button>
+          <div><span class="eyebrow">СЛЕДУЮЩЕЕ ТО</span><strong id="serviceGlanceTitle">Замена масла и фильтров</strong><small id="serviceGlanceMeta">через 8 335 км или 9 месяцев (июль 2026)</small></div>
+          <button class="round-arrow" type="button" data-view="service" aria-label="Открыть план обслуживания">›</button>
         </section>
-
-        <div class="home-section-heading"><div><span class="eyebrow">ВАШ АВТОМОБИЛЬ</span><h2>Разделы</h2></div></div>
-        <div class="feature-grid">
-          <button class="feature-card" type="button" data-view="service"><span class="feature-icon mint">◷</span><strong>Обслуживание</strong><small>План и работы</small></button>
-          <button class="feature-card" type="button" data-view="history"><span class="feature-icon blue">↻</span><strong>История ТО</strong><small><span id="quickRecordCount">0</span> записей</small></button>
-          <button class="feature-card" type="button" data-view="parts"><span class="feature-icon amber">⚙</span><strong>Запчасти</strong><small>Личный каталог</small></button>
-          <button class="feature-card" type="button" data-view="oils"><span class="feature-icon violet">◉</span><strong>Масла</strong><small>Допуски и заметки</small></button>
-          <button class="feature-card" type="button" data-view="reminders"><span class="feature-icon rose">♧</span><strong>Напоминания</strong><small><span id="quickReminderCount">0</span> активных</small></button>
-          <button class="feature-card" type="button" data-view="expenses"><span class="feature-icon blue">▥</span><strong>Расходы</strong><small>По записям ТО</small></button>
+        <div class="feature-grid approved-feature-grid">
+          <button class="feature-card" type="button" data-view="history"><span class="feature-icon blue">⚒</span><span class="feature-copy"><strong>История ТО и ремонты</strong><small><span id="quickRecordCount">0</span> записей</small></span></button>
+          <button class="feature-card" type="button" data-view="parts"><span class="feature-icon mint">⬡</span><span class="feature-copy"><strong>Каталог запчастей</strong><small>Артикулы и подбор</small></span></button>
+          <button class="feature-card" type="button" data-view="reminders"><span class="feature-icon rose">♧</span><span class="feature-copy"><strong>Напоминания</strong><small><span id="quickReminderCount">0</span> активных</small></span></button>
+          <button class="feature-card" type="button" data-view="expenses"><span class="feature-icon blue">▤</span><span class="feature-copy"><strong>Расходы</strong><small>По записям ТО</small></span></button>
         </div>
-
-        <div class="home-section-heading recent-heading"><div><span class="eyebrow">ПОСЛЕДНЕЕ ОБСЛУЖИВАНИЕ</span><h2>Недавняя запись</h2></div><button class="text-button" type="button" data-view="history">Вся история →</button></div>
-        <button class="recent-card" id="recentRecord" type="button" hidden><span class="recent-date" id="recentDate">—</span><span class="recent-main"><strong id="recentWork">—</strong><small id="recentMeta">—</small></span><span class="recent-cost" id="recentCost">—</span></button>
-        <div class="empty-recent" id="emptyRecent"><strong>История ещё не загружена</strong><p>Импортируйте архив ТО, чтобы увидеть ваши записи и документы.</p><button class="secondary-button" id="homeImport" type="button">Загрузить архив</button></div>
+        <div hidden>
+          <span id="vehicleTitle">Audi Q7</span><span id="statRecords">0</span><span id="quickDocumentCount">0</span>
+          <button id="recentRecord" hidden><span id="recentDate"></span><span id="recentWork"></span><span id="recentMeta"></span><span id="recentCost"></span></button>
+          <div id="emptyRecent"></div>
+        </div>
       </section>
 
       <section class="app-view service-view" id="serviceView" hidden>
@@ -167,9 +160,9 @@
 
       <nav class="app-tabs" aria-label="Разделы приложения">
         <button class="app-tab is-active" type="button" data-view="home" aria-current="page"><span>⌂</span><small>Главная</small></button>
-        <button class="app-tab" type="button" data-view="service"><span>◷</span><small>Обслуживание</small></button>
         <button class="app-tab" type="button" data-view="history"><span>↻</span><small>История</small></button>
-        <button class="app-tab" type="button" data-view="expenses"><span>▥</span><small>Расходы</small></button>
+        <button class="app-tab" type="button" data-view="parts"><span>⬡</span><small>Каталог</small></button>
+        <button class="app-tab" type="button" data-view="reminders"><span>♧</span><small>Напоминания</small></button>
         <button class="app-tab" type="button" data-view="more"><span>···</span><small>Ещё</small></button>
       </nav>
     </section>
