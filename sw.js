@@ -1,7 +1,7 @@
 "use strict";
 
 const CACHE_PREFIX = "audi-q7-service-book-shell-";
-const CACHE_NAME = `${CACHE_PREFIX}v12`;
+const CACHE_NAME = `${CACHE_PREFIX}v13`;
 const LEGACY_CACHES = new Set(["service-log-shell-v1"]);
 const APP_FILES = [
   "./",
