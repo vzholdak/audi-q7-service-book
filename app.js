@@ -1335,3 +1335,4 @@ async function startApp() {
 }
 
 startApp();
+
