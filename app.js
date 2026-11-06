@@ -33,6 +33,8 @@ const ui = {
   quickRecordCount: $("#quickRecordCount"),
   quickDocumentCount: $("#quickDocumentCount"),
   documentsList: $("#documentsList"),
+  unlinkedDocumentsSection: $("#unlinkedDocumentsSection"),
+  unlinkedDocumentsList: $("#unlinkedDocumentsList"),
   emptyDocuments: $("#emptyDocuments"),
   addRecord: $("#addRecord"),
   emptyAdd: $("#emptyAdd"),
@@ -704,13 +706,16 @@ function renderReminders() {
   ui.emptyReminders.hidden = items.length > 0;
 }
 
-function renderDocuments() {
+async function renderDocuments() {
   const items = [];
+  const attachedPaths = new Set();
   importedRecords.forEach((record) => {
-    (record["Вложения"] ?? []).forEach((attachment, index) => items.push({ record, attachment, index }));
+    (record["Вложения"] ?? []).forEach((attachment, index) => {
+      items.push({ record, attachment, index });
+      attachedPaths.add(attachmentPath(attachment));
+    });
   });
-  ui.emptyDocuments.hidden = items.length > 0;
-  ui.documentsList.hidden = items.length === 0;
+  ui.documentsList.hidden = !items.length;
   ui.documentsList.innerHTML = items.map(({ record, attachment, index }) => {
     const fileName = attachment.name || attachmentPath(attachment).split("/").pop() || "Документ";
     const recordName = record["Документ"] || record["Работы / событие"] || "Обслуживание";
@@ -720,6 +725,20 @@ function renderDocuments() {
       <span class="document-file-icon">${type}</span><span class="document-card-main"><strong>${escapeHTML(fileName)}</strong><small>${escapeHTML(record["Дата"] || "")} · ${escapeHTML(recordName)}${page ? ` · страница ${page}` : ""}</small></span><span class="document-chevron" aria-hidden="true">›</span>
     </button>`;
   }).join("");
+  try {
+    const unlinked = (await getSavedDocuments()).filter((document) =>
+      document.path.startsWith("docs/") && document.path.toLowerCase().endsWith(".pdf") && !document.path.includes("../") && !attachedPaths.has(document.path),
+    );
+    ui.unlinkedDocumentsSection.hidden = !unlinked.length;
+    ui.unlinkedDocumentsList.innerHTML = unlinked.map((document) => {
+      const fileName = document.path.split("/").pop() || "Документ PDF";
+      return `<button class="document-card" type="button" data-unlinked-document-path="${escapeHTML(document.path)}" data-unlinked-document-name="${escapeHTML(fileName)}"><span class="document-file-icon">PDF</span><span class="document-card-main"><strong>${escapeHTML(fileName)}</strong><small>Без привязки к записи обслуживания</small></span><span class="document-chevron" aria-hidden="true">›</span></button>`;
+    }).join("");
+    ui.emptyDocuments.hidden = items.length > 0 || unlinked.length > 0;
+  } catch {
+    ui.unlinkedDocumentsSection.hidden = true;
+    ui.emptyDocuments.hidden = items.length > 0;
+  }
 }
 
 function filterCount() {
@@ -1288,6 +1307,15 @@ function bindEvents() {
     if (!attachment) return;
     try { await showMedia(attachment); }
     catch { showToast("Не удалось открыть документ. Проверьте, что архив полностью загружен.", 5500); }
+  });
+  ui.unlinkedDocumentsList.addEventListener("click", async (event) => {
+    const button = event.target.closest("[data-unlinked-document-path]");
+    if (!button) return;
+    try {
+      await showMedia({ url: button.dataset.unlinkedDocumentPath, name: button.dataset.unlinkedDocumentName, type: "application/pdf" });
+    } catch {
+      showToast("Не удалось открыть документ. Проверьте, что архив полностью загружен.", 5500);
+    }
   });
   ui.editRecord.addEventListener("click", () => {
     const record = importedRecords.find((item) => recordId(item) === selectedRecordId);
