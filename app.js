@@ -330,6 +330,13 @@ async function handleArchive(file) {
       }
     }
     if (recordFileErrors.length) throw new Error("В архиве есть некорректные ссылки на документы.");
+    for (const entry of entryMap.values()) {
+      if (!entry.name.startsWith("docs/") || !entry.name.toLowerCase().endsWith(".pdf")) continue;
+      if (entry.name.includes("../") || entry.name.includes("\\")) {
+        throw new Error("В архиве есть некорректный путь к документу.");
+      }
+      documents.add(entry.name);
+    }
     const missing = [...documents].filter((path) => !entryMap.has(path));
     if (missing.length) throw new Error(`В архиве не хватает документа: ${missing[0]}`);
 
@@ -1018,6 +1025,16 @@ async function getSavedDocument(path) {
   });
 }
 
+async function getSavedDocuments() {
+  const db = await openDatabase();
+  const tx = db.transaction("docs", "readonly");
+  const request = tx.objectStore("docs").getAll();
+  return new Promise((resolve, reject) => {
+    request.onsuccess = () => resolve(request.result ?? []);
+    request.onerror = () => reject(request.error);
+  });
+}
+
 async function crc32Blob(blob) {
   let crc = 0xffffffff;
   const reader = blob.stream().getReader();
@@ -1055,6 +1072,10 @@ async function buildBackupZip() {
       outputRecords[recordIndex]["Вложения"].push(clone);
     }
     setProgress("Готовлю резервную копию", `Запись ${recordIndex + 1} из ${importedRecords.length}`, 10 + Math.round((recordIndex / importedRecords.length) * 25));
+  }
+  for (const document of await getSavedDocuments()) {
+    if (!document.path.startsWith("docs/") || !document.path.toLowerCase().endsWith(".pdf") || document.path.includes("../")) continue;
+    if (!packedFiles.has(document.path)) packedFiles.set(document.path, document.blob);
   }
   const backup = {
     format: "Audi Q7 history backup", version: 5, exportedAt: new Date().toISOString(),
