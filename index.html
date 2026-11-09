@@ -10,8 +10,8 @@
   <meta name="apple-mobile-web-app-title" content="Audi Q7 921">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; frame-src blob:; object-src 'none'; base-uri 'self'; form-action 'self'">
   <link rel="manifest" href="manifest.webmanifest">
-  <link rel="icon" href="app-icon-192.png" sizes="192x192" type="image/png">
-  <link rel="apple-touch-icon" href="app-icon-192.png">
+  <link rel="icon" href="app-icon-192.png?v=20261109-921" sizes="192x192" type="image/png">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png?v=20261109-921">
   <link rel="stylesheet" href="styles.css?v=20261109">
   <title>Audi Q7 · 921</title>
   <script src="app.js?v=20261109" defer></script>
@@ -134,6 +134,16 @@
         <div class="section-heading module-heading"><div><span class="eyebrow">ВАШИ ЗАПИСИ</span><h2>Каталог</h2></div><button class="text-button" id="addPart" type="button">+ Добавить</button></div>
         <div class="module-list" id="partsList"></div>
         <div class="module-empty" id="emptyParts"><span>⚙</span><strong>Каталог пока пуст</strong><p>Добавьте нужную запчасть и сохраните артикул, чтобы быстро найти её позже.</p><button class="secondary-button" type="button" data-open-module="part">Добавить запчасть</button></div>
+        <section class="parts-shops" aria-labelledby="partsShopsTitle">
+          <div class="section-heading module-heading"><div><span class="eyebrow">БЫСТРЫЕ ССЫЛКИ</span><h2 id="partsShopsTitle">Сайты запчастей</h2></div></div>
+          <div class="parts-shops-grid">
+            <a class="parts-shop-link" href="https://www.exist.ru/" target="_blank" rel="noopener noreferrer"><strong>EXIST</strong><small>Каталоги и подбор по VIN</small><span aria-hidden="true">↗</span></a>
+            <a class="parts-shop-link" href="https://emex.ru/" target="_blank" rel="noopener noreferrer"><strong>EMEX</strong><small>Каталог автозапчастей</small><span aria-hidden="true">↗</span></a>
+            <a class="parts-shop-link" href="https://www.autodoc.ru/" target="_blank" rel="noopener noreferrer"><strong>Автодок</strong><small>Подбор и заказ запчастей</small><span aria-hidden="true">↗</span></a>
+            <a class="parts-shop-link" href="https://autopiter.ru/" target="_blank" rel="noopener noreferrer"><strong>Автопитер</strong><small>Каталог и запрос по VIN</small><span aria-hidden="true">↗</span></a>
+          </div>
+          <p class="parts-shops-note">Перед заказом проверьте применимость детали по VIN или артикулу у продавца.</p>
+        </section>
       </section>
 
       <section class="app-view collection-view" id="oilsView" hidden>
