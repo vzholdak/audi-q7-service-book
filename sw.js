@@ -1,7 +1,7 @@
 "use strict";
 
 const CACHE_PREFIX = "audi-q7-service-book-shell-";
-const CACHE_NAME = `${CACHE_PREFIX}v13`;
+const CACHE_NAME = `${CACHE_PREFIX}v15`;
 const LEGACY_CACHES = new Set(["service-log-shell-v1"]);
 const APP_FILES = [
   "./",
@@ -14,7 +14,7 @@ const APP_FILES = [
   "./app-icon-192.png",
   "./app-icon-512.png",
   "./apple-touch-icon.png",
-  "./audi-q7-approved-car.jpg",
+  "./audi-q7-hero-20261109.jpg",
 ];
 
 self.addEventListener("install", (event) => {
