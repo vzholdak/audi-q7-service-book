@@ -266,6 +266,10 @@ button { -webkit-tap-highlight-color: transparent; }
 .cost-row strong { color: var(--ink); font-weight: 600; }
 .cost-row.total { padding-top: 10px; border-top: 1px solid var(--line); color: var(--ink); font-weight: 700; }
 .attachment-button { display: flex; align-items: center; gap: 11px; width: 100%; padding: 11px 0; border: 0; border-top: 1px solid #eef2f3; text-align: left; color: var(--ink); background: transparent; cursor: pointer; }
+.attachment-section-title { display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:5px; }
+.attachment-section-title h3 { min-width:0; margin:0; }
+.attachment-add-button { flex:none; min-height:35px; padding:0 9px; border:1px solid var(--line); border-radius:10px; color:var(--ink); background:#fff; font-size:10px; font-weight:650; cursor:pointer; }
+.attachment-add-button:active { transform:translateY(1px); }
 .attachment-button:first-of-type { border-top: 0; }
 .pdf-icon { width: 36px; height: 40px; flex: none; display: grid; place-items: center; border-radius: 10px; color: #bd5e52; background: #fff0ed; font-size: 10px; font-weight: 800; }
 .attachment-label { min-width: 0; flex: 1; }

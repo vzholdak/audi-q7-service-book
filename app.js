@@ -828,7 +828,7 @@ function showRecord(record) {
     </div></section>
     ${parts ? `<section class="detail-block"><h3>Запчасти и артикулы</h3><div class="detail-parts">${escapeHTML(parts)}</div></section>` : ""}
     ${note ? `<section class="detail-block"><h3>Примечание</h3>${attention ? `<div class="warning-note"><span>!</span><span>${escapeHTML(note)}</span></div>` : `<div class="detail-note">${escapeHTML(note)}</div>`}</section>` : ""}
-    <section class="detail-block"><h3>Документы и фото · ${attachments.length}</h3>${attachments.length ? attachments.map((attachment, index) => `<button class="attachment-button" type="button" data-attachment-record="${escapeHTML(recordId(record))}" data-attachment-index="${index}"><span class="pdf-icon">${String(attachment.type ?? "").includes("image") ? "ФОТО" : "PDF"}</span><span class="attachment-label"><strong>${escapeHTML(attachment.name || "Документ")}</strong><small>${pageNumber(attachment) ? `Страница ${pageNumber(attachment)} · оригинал из архива` : escapeHTML(attachment.source || "Оригинал или файл, добавленный на устройстве")}</small></span><span class="attachment-arrow">›</span></button>`).join("") : '<div class="detail-note">Документы не прикреплены.</div>'}</section>
+    <section class="detail-block"><div class="attachment-section-title"><h3>Документы и фото · ${attachments.length}</h3><button class="attachment-add-button" type="button" data-add-record-attachment="${escapeHTML(recordId(record))}">+ Добавить скан или фото</button></div>${attachments.length ? attachments.map((attachment, index) => `<button class="attachment-button" type="button" data-attachment-record="${escapeHTML(recordId(record))}" data-attachment-index="${index}"><span class="pdf-icon">${String(attachment.type ?? "").includes("image") ? "ФОТО" : "PDF"}</span><span class="attachment-label"><strong>${escapeHTML(attachment.name || "Документ")}</strong><small>${pageNumber(attachment) ? `Страница ${pageNumber(attachment)} · оригинал из архива` : escapeHTML(attachment.source || "Оригинал или файл, добавленный на устройстве")}</small></span><span class="attachment-arrow">›</span></button>`).join("") : '<div class="detail-note">Документы не прикреплены.</div>'}</section>
   `;
   ui.detailDialog.showModal();
 }
@@ -1325,6 +1325,15 @@ function bindEvents() {
   });
   ui.deleteRecord.addEventListener("click", removeSelectedRecord);
   ui.detailContent.addEventListener("click", async (event) => {
+    const addAttachment = event.target.closest("[data-add-record-attachment]");
+    if (addAttachment) {
+      const record = importedRecords.find((item) => recordId(item) === addAttachment.dataset.addRecordAttachment);
+      if (!record) return;
+      closeDialog("detailDialog");
+      openRecordEditor(record);
+      requestAnimationFrame(() => ui.recordFiles.scrollIntoView({ block: "center", behavior: "smooth" }));
+      return;
+    }
     const button = event.target.closest("[data-attachment-index]");
     if (!button) return;
     const record = importedRecords.find((item) => recordId(item) === button.dataset.attachmentRecord);

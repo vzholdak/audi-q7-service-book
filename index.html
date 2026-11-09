@@ -14,7 +14,7 @@
   <link rel="apple-touch-icon" href="apple-touch-icon.png?v=20261109-921">
   <link rel="stylesheet" href="styles.css?v=20261109">
   <title>Audi Q7 · 921</title>
-  <script src="app.js?v=20261109" defer></script>
+  <script src="app.js?v=20261109-scan1" defer></script>
 </head>
 <body>
   <main class="shell">
@@ -206,7 +206,7 @@
       <div class="form-section"><label>Дата<input id="recordDate" name="date" type="date" required></label><label>Пробег, км<input id="recordMileage" name="mileage" type="number" inputmode="numeric" min="0" step="1" placeholder="Например, 125000"></label><label>Заказ-наряд или документ<input id="recordDocument" name="document" type="text" maxlength="160" placeholder="Например, Заказ-наряд №1234"></label><label>Работы или событие<textarea id="recordWork" name="work" rows="3" maxlength="2000" required placeholder="Что было сделано"></textarea></label><label>Запчасти и артикулы<textarea id="recordParts" name="parts" rows="2" maxlength="2000" placeholder="При необходимости"></textarea></label></div>
       <div class="form-section"><h3>Стоимость, ₽</h3><div class="form-grid"><label>Работы<input id="recordLabor" name="labor" type="number" inputmode="decimal" min="0" step="0.01" placeholder="0"></label><label>Запчасти и материалы<input id="recordMaterials" name="materials" type="number" inputmode="decimal" min="0" step="0.01" placeholder="0"></label><label>Итого<input id="recordTotal" name="total" type="number" inputmode="decimal" min="0" step="0.01" placeholder="Автоматически"></label></div></div>
       <div class="form-section"><label>Статус сверки<input id="recordStatus" name="status" type="text" maxlength="300" placeholder="Например, Добавлено вручную"></label><label>Примечание<textarea id="recordNote" name="note" rows="3" maxlength="2000" placeholder="Дополнительная информация"></textarea></label></div>
-      <div class="form-section"><label class="file-label">Добавить фото или PDF<input id="recordFiles" name="files" type="file" accept="application/pdf,image/*" multiple><small>Файлы сохраняются на этом устройстве.</small></label><div class="existing-files" id="existingFiles"></div></div>
+      <div class="form-section"><label class="file-label">Скан, фото или PDF<input id="recordFiles" name="files" type="file" accept="application/pdf,image/*" multiple><small>Снимите документ камерой или выберите фото/PDF. Файл прикрепится к этой записи и останется на этом устройстве.</small></label><div class="existing-files" id="existingFiles"></div></div>
       <div class="form-error" id="recordFormError" role="alert" hidden></div>
       <div class="form-footer"><button class="secondary-button" type="button" data-close="recordDialog">Отмена</button><button class="primary-button form-save" type="submit">Сохранить запись</button></div>
     </form>
